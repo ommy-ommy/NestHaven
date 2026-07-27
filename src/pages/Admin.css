@@ -1,0 +1,81 @@
+/* ===== ADMIN LAYOUT ===== */
+.admin-layout { display: flex; min-height: 100vh; }
+
+/* Sidebar */
+.admin-sidebar { width: 260px; background: var(--color-bg-dark); color: var(--color-text-light); display: flex; flex-direction: column; padding: var(--space-xl) 0; position: fixed; top: 0; bottom: 0; left: 0; z-index: 100; }
+.admin-logo { display: flex; align-items: center; gap: var(--space-sm); padding: 0 var(--space-xl); margin-bottom: var(--space-2xl); font-family: var(--font-heading); font-weight: 800; font-size: var(--fs-lg); color: var(--color-text-light) !important; }
+.admin-tag { font-size: var(--fs-xs); padding: 0.15rem 0.5rem; background: var(--color-primary); border-radius: var(--radius-full); font-weight: 600; color: white; }
+.admin-nav { flex: 1; display: flex; flex-direction: column; gap: 2px; padding: 0 var(--space-md); }
+.admin-link { display: flex; align-items: center; gap: var(--space-md); padding: 0.75rem var(--space-lg); border-radius: var(--radius-md); color: rgba(250, 250, 242, 0.6) !important; font-size: var(--fs-sm); font-weight: 500; transition: all var(--transition-fast); }
+.admin-link:hover { background: rgba(255,255,255,0.08); color: var(--color-text-light) !important; }
+.admin-link-active { background: rgba(138, 182, 65, 0.15) !important; color: var(--color-primary-light) !important; }
+.admin-sidebar-footer { padding: var(--space-lg) var(--space-xl); border-top: 1px solid rgba(255,255,255,0.08); }
+
+/* Main */
+.admin-main { flex: 1; margin-left: 260px; padding: var(--space-2xl); background: var(--color-bg); min-height: 100vh; }
+.admin-header { margin-bottom: var(--space-2xl); }
+.admin-header h1 { font-size: var(--fs-2xl); margin-bottom: 4px; }
+.admin-header p { color: var(--color-text-muted); }
+
+/* Stats */
+.admin-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-lg); margin-bottom: var(--space-2xl); }
+.admin-stat-card { display: flex; align-items: center; gap: var(--space-lg); padding: var(--space-xl); background: var(--color-bg-card); border-radius: var(--radius-xl); border: 1px solid var(--color-border-light); }
+.admin-stat-icon { width: 48px; height: 48px; border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.admin-stat-value { font-family: var(--font-heading); font-weight: 800; font-size: var(--fs-xl); }
+.admin-stat-label { font-size: var(--fs-sm); color: var(--color-text-muted); }
+.admin-stat-change { display: flex; align-items: center; gap: 3px; font-size: var(--fs-xs); font-weight: 600; margin-left: auto; }
+
+/* Grid */
+.admin-grid-2 { display: grid; grid-template-columns: 1.5fr 1fr; gap: var(--space-xl); margin-bottom: var(--space-2xl); }
+.admin-card { background: var(--color-bg-card); border-radius: var(--radius-xl); padding: var(--space-xl); border: 1px solid var(--color-border-light); }
+.admin-card h3 { display: flex; align-items: center; gap: var(--space-sm); font-size: var(--fs-lg); margin-bottom: var(--space-lg); }
+
+/* Activity */
+.activity-list { display: flex; flex-direction: column; }
+.activity-item { display: flex; align-items: flex-start; gap: var(--space-md); padding: var(--space-md) 0; border-bottom: 1px solid var(--color-border-light); }
+.activity-item:last-child { border-bottom: none; }
+.activity-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--color-primary); margin-top: 6px; flex-shrink: 0; }
+.activity-action { font-weight: 600; font-size: var(--fs-sm); font-family: var(--font-heading); }
+.activity-detail { font-size: var(--fs-xs); color: var(--color-text-muted); margin-top: 2px; }
+.activity-time { font-size: var(--fs-xs); color: var(--color-text-muted); margin-left: auto; white-space: nowrap; }
+
+/* Admin Table */
+.admin-table-wrap { overflow-x: auto; }
+.admin-table { width: 100%; border-collapse: collapse; }
+.admin-table th { text-align: left; padding: var(--space-md) var(--space-lg); font-size: var(--fs-sm); font-weight: 600; color: var(--color-text-muted); font-family: var(--font-heading); border-bottom: 2px solid var(--color-border-light); background: var(--color-surface); }
+.admin-table td { padding: var(--space-md) var(--space-lg); font-size: var(--fs-sm); border-bottom: 1px solid var(--color-border-light); }
+.admin-table tr:hover td { background: rgba(138, 182, 65, 0.03); }
+.admin-user-cell { display: flex; align-items: center; gap: var(--space-md); }
+.admin-user-avatar { width: 36px; height: 36px; border-radius: var(--radius-full); background: var(--color-primary-lighter); color: var(--color-primary-dark); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: var(--fs-xs); font-family: var(--font-heading); flex-shrink: 0; }
+.admin-user-name { font-weight: 600; font-family: var(--font-heading); }
+.admin-user-email { font-size: var(--fs-xs); color: var(--color-text-muted); }
+.status-badge { padding: 0.2rem 0.6rem; border-radius: var(--radius-full); font-size: var(--fs-xs); font-weight: 600; }
+.status-active { background: rgba(76, 175, 80, 0.1); color: #2E7D32; }
+.status-pending { background: rgba(255, 152, 0, 0.1); color: #E65100; }
+.status-banned { background: rgba(244, 67, 54, 0.1); color: #C62828; }
+
+/* Responsive */
+@media (max-width: 900px) {
+  .admin-sidebar { width: 60px; padding: var(--space-md) 0; }
+  .admin-logo span, .admin-tag { display: none; }
+  .admin-link span { display: none; }
+  .admin-link { justify-content: center; padding: 0.75rem; }
+  .admin-main { margin-left: 60px; }
+  .admin-stats { grid-template-columns: repeat(2, 1fr); }
+  .admin-grid-2 { grid-template-columns: 1fr; }
+  .admin-sidebar-footer { display: none; }
+}
+
+@media (max-width: 600px) {
+  .admin-main { padding: var(--space-lg); }
+  .admin-stats { grid-template-columns: 1fr 1fr; gap: var(--space-md); }
+  .admin-stat-card { padding: var(--space-md); flex-direction: column; align-items: flex-start; gap: var(--space-sm); }
+  .admin-stat-change { margin-left: 0; }
+  .admin-card { padding: var(--space-md); }
+  .admin-table th, .admin-table td { padding: var(--space-sm) var(--space-md); font-size: var(--fs-xs); }
+  .admin-header h1 { font-size: var(--fs-xl); }
+
+  /* Chart */
+  .chart-placeholder { min-height: 160px; }
+}
+
