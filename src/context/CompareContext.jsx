@@ -24,9 +24,9 @@ export function CompareProvider({ children }) {
     loadComparedList()
   }, [user?.id])
 
-  // Resolve full property objects for compared IDs
-  const comparedProperties = comparedIds
-    .map(id => properties.find(p => String(p.id) === String(id)))
+  // Resolve full property objects for compared IDs safely
+  const comparedProperties = (properties || [])
+    .map(id => (properties || []).find(p => p && String(p.id) === String(id)))
     .filter(Boolean)
 
   const isInCompare = (propertyId) => {
