@@ -111,15 +111,20 @@ export function AuthProvider({ children }) {
 
     // Get initial session
     supabase.auth.getSession().then(async ({ data: { session }, error }) => {
-      if (error) {
-        setAuthError(error.message)
+      try {
+        if (error) {
+          setAuthError(error.message)
+        }
+        setSession(session)
+        if (session?.user) {
+          const profile = await fetchProfile(session.user)
+          setUser(profile)
+        }
+      } catch (err) {
+        console.error('getSession profile error:', err)
+      } finally {
+        setLoading(false)
       }
-      setSession(session)
-      if (session?.user) {
-        const profile = await fetchProfile(session.user)
-        setUser(profile)
-      }
-      setLoading(false)
     }).catch(err => {
       console.error('getSession error:', err)
       setLoading(false)
@@ -127,14 +132,19 @@ export function AuthProvider({ children }) {
 
     // Listen for auth state changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      setSession(session)
-      if (session?.user) {
-        const profile = await fetchProfile(session.user)
-        setUser(profile)
-      } else {
-        setUser(null)
+      try {
+        setSession(session)
+        if (session?.user) {
+          const profile = await fetchProfile(session.user)
+          setUser(profile)
+        } else {
+          setUser(null)
+        }
+      } catch (err) {
+        console.error('onAuthStateChange profile error:', err)
+      } finally {
+        setLoading(false)
       }
-      setLoading(false)
     })
 
     return () => subscription.unsubscribe()
