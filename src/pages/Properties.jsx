@@ -1,6 +1,7 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useLocation } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Search, SlidersHorizontal, X, MapPin, Grid3X3, List, ChevronDown } from 'lucide-react'
+import { Search, SlidersHorizontal, X, MapPin, Grid3X3, List, ChevronDown, Compass } from 'lucide-react'
 import { useProperties } from '../context/PropertyContext'
 import PropertyCard from '../components/property/PropertyCard'
 import './Properties.css'
@@ -9,12 +10,32 @@ export default function Properties() {
   const { filters, updateFilter, resetFilters, getFilteredProperties } = useProperties()
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [viewMode, setViewMode] = useState('grid')
+  const location = useLocation()
+
+  // Parse URL search parameters (e.g. ?q=pune or ?city=Pune)
+  useEffect(() => {
+    const params = new URLSearchParams(location.search)
+    const qParam = params.get('q') || params.get('search')
+    const cityParam = params.get('city')
+    const typeParam = params.get('type')
+
+    if (qParam) {
+      updateFilter('search', qParam)
+    }
+    if (cityParam) {
+      updateFilter('city', cityParam)
+    }
+    if (typeParam) {
+      updateFilter('listingType', typeParam === 'rent' ? 'rent' : 'buy')
+    }
+  }, [location.search])
+
   const filtered = getFilteredProperties()
 
   const filterOptions = {
     type: ['all', 'apartment', 'villa', 'house', 'plot'],
     bhk: ['all', '1', '2', '3', '4'],
-    city: ['all', 'Mumbai', 'Bangalore', 'Delhi', 'Gurgaon', 'Pune', 'Hyderabad'],
+    city: ['all', 'Mumbai', 'Bangalore', 'Delhi', 'Gurgaon', 'Pune', 'Hyderabad', 'Chennai', 'Kolkata', 'Goa'],
     furnished: ['all', 'furnished', 'semi-furnished', 'unfurnished'],
     sortBy: [
       { value: 'newest', label: 'Newest First' },
@@ -23,6 +44,8 @@ export default function Properties() {
       { value: 'popular', label: 'Most Popular' },
     ]
   }
+
+  const popularCities = ['Mumbai', 'Bangalore', 'Delhi', 'Pune', 'Gurgaon', 'Hyderabad', 'Chennai', 'Goa']
 
   return (
     <motion.div
@@ -39,7 +62,7 @@ export default function Properties() {
               <h1>
                 {filters.listingType === 'rent' ? 'Properties for Rent' : 'Properties for Sale'}
               </h1>
-              <p>{filtered.length} properties found</p>
+              <p>{filtered.length} properties matching search criteria</p>
             </div>
             <div className="properties-header-actions">
               <div className="listing-type-toggle">
@@ -68,6 +91,55 @@ export default function Properties() {
                 <SlidersHorizontal size={16} />
                 Filters
               </button>
+            </div>
+          </div>
+
+          {/* Location Search Bar */}
+          <div className="prop-search-bar-wrap">
+            <div className="prop-search-input-box">
+              <MapPin size={18} color="var(--color-primary)" />
+              <input
+                type="text"
+                placeholder="Search location, city (e.g. Pune, Mumbai, Bangalore), locality, or property type..."
+                value={filters.search || ''}
+                onChange={e => updateFilter('search', e.target.value)}
+              />
+              {filters.search && (
+                <button className="prop-search-clear" onClick={() => updateFilter('search', '')}>
+                  <X size={16} />
+                </button>
+              )}
+            </div>
+
+            {/* Quick City Tags */}
+            <div className="city-quick-tags">
+              <span className="city-tag-label"><Compass size={14} /> Quick Cities:</span>
+              <button
+                className={`city-tag-btn ${!filters.search && filters.city === 'all' ? 'active' : ''}`}
+                onClick={() => {
+                  updateFilter('search', '')
+                  updateFilter('city', 'all')
+                }}
+              >
+                All India
+              </button>
+              {popularCities.map(cityName => (
+                <button
+                  key={cityName}
+                  className={`city-tag-btn ${
+                    filters.search?.toLowerCase() === cityName.toLowerCase() ||
+                    filters.city?.toLowerCase() === cityName.toLowerCase()
+                      ? 'active'
+                      : ''
+                  }`}
+                  onClick={() => {
+                    updateFilter('search', cityName)
+                    updateFilter('city', 'all')
+                  }}
+                >
+                  {cityName}
+                </button>
+              ))}
             </div>
           </div>
         </div>

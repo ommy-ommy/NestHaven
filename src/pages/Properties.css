@@ -28,6 +28,98 @@
   font-size: var(--fs-sm);
 }
 
+/* Location Search Bar & Quick City Tags */
+.prop-search-bar-wrap {
+  margin-top: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.prop-search-input-box {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: #ffffff;
+  border: 1.5px solid var(--color-border, #cbd5e1);
+  border-radius: var(--radius-lg, 12px);
+  padding: 0.75rem 1.1rem;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+  transition: all 0.2s ease;
+}
+
+.prop-search-input-box:focus-within {
+  border-color: var(--color-primary, #8ab641);
+  box-shadow: 0 0 0 3px rgba(138, 182, 65, 0.15);
+}
+
+.prop-search-input-box input {
+  border: none;
+  outline: none;
+  width: 100%;
+  font-size: 0.95rem;
+  font-family: var(--font-body, 'Inter', sans-serif);
+  color: var(--color-text-main, #0f172a);
+}
+
+.prop-search-clear {
+  background: none;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px;
+  border-radius: 50%;
+}
+
+.prop-search-clear:hover {
+  color: #0f172a;
+  background: #f1f5f9;
+}
+
+.city-quick-tags {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.city-tag-label {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--color-text-secondary, #475569);
+  margin-right: 0.25rem;
+}
+
+.city-tag-btn {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  padding: 0.35rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--color-text-main, #334155);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.city-tag-btn:hover {
+  border-color: var(--color-primary, #8ab641);
+  transform: translateY(-1px);
+}
+
+.city-tag-btn.active {
+  background: var(--color-primary, #8ab641);
+  color: #ffffff;
+  border-color: var(--color-primary, #8ab641);
+  box-shadow: 0 4px 10px rgba(138, 182, 65, 0.3);
+}
+
 .properties-header-actions {
   display: flex;
   align-items: center;

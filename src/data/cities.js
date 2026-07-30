@@ -5,6 +5,8 @@ export const cities = [
   { id: 'gurgaon', name: 'Gurgaon', state: 'Haryana', properties: 142, image: 'https://images.unsplash.com/photo-1582510003544-4d00b7f74220?w=600&q=80', tagline: 'Millennium City' },
   { id: 'pune', name: 'Pune', state: 'Maharashtra', properties: 178, image: 'https://images.unsplash.com/photo-1625731226721-b4d51ae70e20?w=600&q=80', tagline: 'Oxford of the East' },
   { id: 'hyderabad', name: 'Hyderabad', state: 'Telangana', properties: 134, image: 'https://images.unsplash.com/photo-1572883454114-efb8ff940c39?w=600&q=80', tagline: 'City of Pearls' },
+  { id: 'chennai', name: 'Chennai', state: 'Tamil Nadu', properties: 112, image: 'https://images.unsplash.com/photo-1582510003544-4d00b7f74220?w=600&q=80', tagline: 'Gateway to South' },
+  { id: 'goa', name: 'Goa', state: 'Goa', properties: 95, image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=600&q=80', tagline: 'Pearl of the Orient' },
 ]
 
 export const reviews = [

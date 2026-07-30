@@ -125,8 +125,9 @@ export function PropertyProvider({ children }) {
 
   const resetFilters = () => {
     setFilters({
+      search: '',
       type: 'all',
-      priceRange: [0, 50000000],
+      priceRange: [0, 150000000],
       bhk: 'all',
       city: 'all',
       furnished: 'all',
@@ -138,25 +139,66 @@ export function PropertyProvider({ children }) {
   const getFilteredProperties = () => {
     let result = [...properties]
 
-    if (filters.listingType !== 'all') {
+    // 1. Strict Search Query Filter (Location, City, Locality, Keywords)
+    if (filters.search && filters.search.trim() !== '') {
+      const q = filters.search.trim().toLowerCase()
+      const knownCities = [
+        'mumbai', 'bangalore', 'delhi', 'gurgaon', 'pune',
+        'hyderabad', 'chennai', 'kolkata', 'ahmedabad', 'goa'
+      ]
+
+      // Check if query matches a city name strictly
+      const matchedCity = knownCities.find(c => c === q || q.includes(c))
+
+      if (matchedCity) {
+        // Return ONLY properties belonging strictly to that city
+        result = result.filter(p => (p.city || '').toLowerCase().includes(matchedCity))
+      } else {
+        // Search across title, locality, address, city, description, and type
+        result = result.filter(p => {
+          const titleMatch = (p.title || '').toLowerCase().includes(q)
+          const cityMatch = (p.city || '').toLowerCase().includes(q)
+          const localityMatch = (p.locality || '').toLowerCase().includes(q)
+          const addressMatch = (p.address || '').toLowerCase().includes(q)
+          const typeMatch = (p.type || '').toLowerCase().includes(q)
+          const descMatch = (p.description || '').toLowerCase().includes(q)
+          return titleMatch || cityMatch || localityMatch || addressMatch || typeMatch || descMatch
+        })
+      }
+    }
+
+    // 2. City Filter (Strict dropdown selection)
+    if (filters.city && filters.city !== 'all') {
+      const targetCity = filters.city.toLowerCase()
+      result = result.filter(p => (p.city || '').toLowerCase() === targetCity)
+    }
+
+    // 3. Listing Type (Buy / Rent)
+    if (filters.listingType && filters.listingType !== 'all') {
       result = result.filter(p => p.listingType === filters.listingType)
     }
-    if (filters.type !== 'all') {
-      result = result.filter(p => p.type === filters.type)
+
+    // 4. Property Type (Apartment, Villa, House, Plot)
+    if (filters.type && filters.type !== 'all') {
+      result = result.filter(p => (p.type || '').toLowerCase() === filters.type.toLowerCase())
     }
-    if (filters.bhk !== 'all') {
+
+    // 5. BHK Filter
+    if (filters.bhk && filters.bhk !== 'all') {
       result = result.filter(p => p.bhk === parseInt(filters.bhk))
     }
-    if (filters.city !== 'all') {
-      result = result.filter(p => p.city === filters.city)
+
+    // 6. Furnished Status
+    if (filters.furnished && filters.furnished !== 'all') {
+      result = result.filter(p => (p.furnished || '').toLowerCase() === filters.furnished.toLowerCase())
     }
-    if (filters.furnished !== 'all') {
-      result = result.filter(p => p.furnished === filters.furnished)
-    }
+
+    // 7. Price Range Filter
     result = result.filter(
       p => p.price >= filters.priceRange[0] && p.price <= filters.priceRange[1]
     )
 
+    // 8. Sorting
     switch (filters.sortBy) {
       case 'price-low':
         result.sort((a, b) => a.price - b.price)
@@ -165,11 +207,11 @@ export function PropertyProvider({ children }) {
         result.sort((a, b) => b.price - a.price)
         break
       case 'popular':
-        result.sort((a, b) => b.views - a.views)
+        result.sort((a, b) => (b.views || 0) - (a.views || 0))
         break
       case 'newest':
       default:
-        result.sort((a, b) => new Date(b.listedDate) - new Date(a.listedDate))
+        result.sort((a, b) => new Date(b.listedDate || 0) - new Date(a.listedDate || 0))
     }
 
     return result
