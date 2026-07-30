@@ -3,15 +3,13 @@ import { Link, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Home, AlertCircle, Info } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
-import GoogleAccountModal from '../components/auth/GoogleAccountModal'
 import './Auth.css'
 
 export default function Login() {
-  const { loginWithGoogleAccount, signInWithEmail, loginAs, authError, clearAuthError } = useAuth()
+  const { signInWithGoogle, signInWithEmail, loginAs, authError, clearAuthError } = useAuth()
   const navigate = useNavigate()
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(false)
-  const [showGoogleModal, setShowGoogleModal] = useState(false)
 
   // Form State
   const [email, setEmail] = useState('')
@@ -24,18 +22,18 @@ export default function Login() {
     }
   }, [authError])
 
-  const handleGoogleAccountSelected = async (account) => {
+  const handleGoogleLogin = async () => {
     try {
       setLoading(true)
       setError(null)
-      setShowGoogleModal(false)
       if (clearAuthError) clearAuthError()
-      await loginWithGoogleAccount(account)
-      navigate('/buyer/dashboard')
+      await signInWithGoogle('buyer')
     } catch (err) {
       console.error('Google Login error:', err)
-      setError(err.message || 'Google sign-in failed.')
-    } finally {
+      setError(
+        err.message ||
+        'Google Sign-In requires enabling Google Provider in your Supabase Dashboard (Authentication -> Providers -> Google).'
+      )
       setLoading(false)
     }
   }
@@ -125,7 +123,7 @@ export default function Login() {
           <div className="social-buttons" style={{ flexDirection: 'column', gap: '0.75rem' }}>
             <button
               className="social-btn google-btn"
-              onClick={() => setShowGoogleModal(true)}
+              onClick={handleGoogleLogin}
               disabled={loading}
               style={{ width: '100%', justifyContent: 'center' }}
             >
@@ -196,13 +194,6 @@ export default function Login() {
           </div>
         </div>
       </div>
-      {/* Google Account Chooser Modal */}
-      <GoogleAccountModal
-        isOpen={showGoogleModal}
-        onClose={() => setShowGoogleModal(false)}
-        onSelectAccount={handleGoogleAccountSelected}
-        role="buyer"
-      />
     </motion.div>
   )
 }

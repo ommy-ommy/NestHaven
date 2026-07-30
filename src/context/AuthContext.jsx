@@ -179,107 +179,24 @@ export function AuthProvider({ children }) {
     return data
   }
 
-  // Google OAuth sign in with automatic fallback for unenabled providers
+  // Official Google OAuth 2.0 Sign In with Google Account Selection Prompt
   const signInWithGoogle = async (role = 'buyer') => {
     setAuthError(null)
     localStorage.setItem('pending_role', role)
 
-    try {
-      // 1. Try fetching OAuth URL from Supabase
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: window.location.origin,
-          skipBrowserRedirect: true,
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: window.location.origin,
+        queryParams: {
+          prompt: 'select_account', // Forces Google to open official Account Chooser screen showing all emails!
+          access_type: 'offline',
         },
-      })
+      },
+    })
 
-      if (error || !data?.url) {
-        return await fallbackGoogleLogin(role)
-      }
-
-      // 2. Test if Supabase provider returns 400 error (Unsupported provider)
-      const testRes = await fetch(data.url, { method: 'GET' }).catch(() => null)
-      if (testRes && testRes.status >= 400) {
-        console.warn('Supabase Google OAuth provider is unconfigured. Using Google One-Click Auth.')
-        return await fallbackGoogleLogin(role)
-      }
-
-      // 3. Provider is enabled -> Proceed with OAuth redirect
-      window.location.href = data.url
-      return data
-    } catch (err) {
-      console.warn('Google OAuth error, using Google One-Click Auth fallback:', err)
-      return await fallbackGoogleLogin(role)
-    }
-  }
-
-  // Google One-Click Auth Fallback Profile Generator
-  const fallbackGoogleLogin = async (role = 'buyer') => {
-    const googleUser = {
-      id: `google_${Date.now()}`,
-      name: role === 'seller' ? 'Arjun Mehta' : 'Priya Sharma',
-      email: role === 'seller' ? 'seller.google@nesthaven.com' : 'priya.google@gmail.com',
-      phone: '+91 98765 43210',
-      role: role,
-      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&q=80',
-      company: role === 'seller' ? 'Mehta Real Estate Group' : null,
-      propertiesVisited: 14,
-      favoriteCount: 6,
-      meetingsScheduled: 3,
-      verified: true,
-      joinedDate: '2026-01-15',
-    }
-
-    try {
-      await supabase.from('profiles').upsert({
-        id: googleUser.id,
-        email: googleUser.email,
-        full_name: googleUser.name,
-        role: role,
-        phone: googleUser.phone,
-        company: googleUser.company || '',
-      })
-    } catch (e) {
-      console.warn('Profile upsert warning:', e)
-    }
-
-    setUser(googleUser)
-    return { user: googleUser }
-  }
-
-  // Login with selected Google Account from modal chooser
-  const loginWithGoogleAccount = async (account) => {
-    setAuthError(null)
-    const googleUser = {
-      id: account.id || `google_${Date.now()}`,
-      name: account.name,
-      email: account.email,
-      phone: '+91 98765 43210',
-      role: account.role || 'buyer',
-      avatar: account.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(account.name)}&background=8AB641&color=fff`,
-      company: account.role === 'seller' ? 'Real Estate Owner' : null,
-      propertiesVisited: 12,
-      favoriteCount: 5,
-      meetingsScheduled: 2,
-      verified: true,
-      joinedDate: new Date().toISOString().split('T')[0],
-    }
-
-    try {
-      await supabase.from('profiles').upsert({
-        id: googleUser.id,
-        email: googleUser.email,
-        full_name: googleUser.name,
-        role: googleUser.role,
-        avatar_url: googleUser.avatar,
-      })
-    } catch (e) {
-      console.warn('Profile upsert warning:', e)
-    }
-
-    setUser(googleUser)
-    return { user: googleUser }
+    if (error) throw error
+    return data
   }
 
   // Update profile role

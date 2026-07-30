@@ -3,15 +3,13 @@ import { Link, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Building2, Home, ArrowRight, CheckCircle, AlertCircle, Mail } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
-import GoogleAccountModal from '../components/auth/GoogleAccountModal'
 import './Auth.css'
 
 export default function Signup() {
   const navigate = useNavigate()
-  const { signUpWithEmail, loginWithGoogleAccount, loginAs } = useAuth()
+  const { signUpWithEmail, signInWithGoogle, loginAs } = useAuth()
   const [step, setStep] = useState(0) // 0: select role, 1: form, 2: confirmation
   const [selectedRole, setSelectedRole] = useState('buyer')
-  const [showGoogleModal, setShowGoogleModal] = useState(false)
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
@@ -34,17 +32,17 @@ export default function Signup() {
     setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }))
   }
 
-  const handleGoogleAccountSelected = async (account) => {
+  const handleGoogleSignup = async () => {
     try {
       setLoading(true)
       setError(null)
-      setShowGoogleModal(false)
-      await loginWithGoogleAccount({ ...account, role: selectedRole || 'buyer' })
-      navigate(selectedRole === 'seller' ? '/seller/dashboard' : '/buyer/dashboard')
+      await signInWithGoogle(selectedRole || 'buyer')
     } catch (err) {
-      console.error('Google Account select error:', err)
-      setError(err.message || 'Google account sign-up failed.')
-    } finally {
+      console.error('Google Signup error:', err)
+      setError(
+        err.message ||
+        'Google Sign-In requires enabling Google Provider in your Supabase Dashboard (Authentication -> Providers -> Google).'
+      )
       setLoading(false)
     }
   }
@@ -210,7 +208,7 @@ export default function Signup() {
               <div className="social-buttons" style={{ flexDirection: 'column', gap: '0.75rem' }}>
                 <button
                   className="social-btn google-btn"
-                  onClick={() => setShowGoogleModal(true)}
+                  onClick={handleGoogleSignup}
                   disabled={loading}
                   style={{ width: '100%', justifyContent: 'center' }}
                 >
@@ -324,13 +322,6 @@ export default function Signup() {
           </div>
         </div>
       </div>
-      {/* Google Account Chooser Modal */}
-      <GoogleAccountModal
-        isOpen={showGoogleModal}
-        onClose={() => setShowGoogleModal(false)}
-        onSelectAccount={handleGoogleAccountSelected}
-        role={selectedRole || 'buyer'}
-      />
     </motion.div>
   )
 }
