@@ -40,13 +40,14 @@ export default function Signup() {
     try {
       setLoading(true)
       setError(null)
-      await signInWithGoogle(selectedRole || 'buyer')
+      const res = await signInWithGoogle(selectedRole || 'buyer')
+      if (res?.user) {
+        navigate(selectedRole === 'seller' ? '/seller/dashboard' : '/buyer/dashboard')
+      }
     } catch (err) {
       console.error('Google Signup error:', err)
-      setError(
-        err.message ||
-        'Google Sign-In is not enabled in your Supabase project dashboard. Please sign up using Email & Password or use Demo mode.'
-      )
+      setError(err.message || 'Google sign-up failed. Please try again.')
+    } finally {
       setLoading(false)
     }
   }

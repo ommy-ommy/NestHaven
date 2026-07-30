@@ -27,13 +27,14 @@ export default function Login() {
       setLoading(true)
       setError(null)
       if (clearAuthError) clearAuthError()
-      await signInWithGoogle('buyer')
+      const res = await signInWithGoogle('buyer')
+      if (res?.user) {
+        navigate('/buyer/dashboard')
+      }
     } catch (err) {
       console.error('Google Login error:', err)
-      setError(
-        err.message ||
-        'Google Sign-In is not enabled in your Supabase project dashboard. Please configure Google OAuth credentials in Supabase or use Email & Password / Demo login.'
-      )
+      setError(err.message || 'Google sign-in failed.')
+    } finally {
       setLoading(false)
     }
   }
