@@ -248,6 +248,40 @@ export function AuthProvider({ children }) {
     return { user: googleUser }
   }
 
+  // Login with selected Google Account from modal chooser
+  const loginWithGoogleAccount = async (account) => {
+    setAuthError(null)
+    const googleUser = {
+      id: account.id || `google_${Date.now()}`,
+      name: account.name,
+      email: account.email,
+      phone: '+91 98765 43210',
+      role: account.role || 'buyer',
+      avatar: account.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(account.name)}&background=8AB641&color=fff`,
+      company: account.role === 'seller' ? 'Real Estate Owner' : null,
+      propertiesVisited: 12,
+      favoriteCount: 5,
+      meetingsScheduled: 2,
+      verified: true,
+      joinedDate: new Date().toISOString().split('T')[0],
+    }
+
+    try {
+      await supabase.from('profiles').upsert({
+        id: googleUser.id,
+        email: googleUser.email,
+        full_name: googleUser.name,
+        role: googleUser.role,
+        avatar_url: googleUser.avatar,
+      })
+    } catch (e) {
+      console.warn('Profile upsert warning:', e)
+    }
+
+    setUser(googleUser)
+    return { user: googleUser }
+  }
+
   // Update profile role
   const updateRole = async (newRole) => {
     if (user?.id) {
@@ -288,6 +322,7 @@ export function AuthProvider({ children }) {
         signUpWithEmail,
         signInWithEmail,
         signInWithGoogle,
+        loginWithGoogleAccount,
         updateRole,
         login: loginAs,
         logout,
