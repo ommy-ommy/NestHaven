@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Home, Search, Heart, User, Menu, X, LogIn, Building2, ChevronDown, MessageSquare, LayoutDashboard } from 'lucide-react'
+import { Home, Search, Heart, User, Menu, X, LogIn, Building2, ChevronDown, MessageSquare, LayoutDashboard, GitCompare } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
 import { useFavorites } from '../../context/FavoriteContext'
+import { useCompare } from '../../context/CompareContext'
 import './Navbar.css'
 
 export default function Navbar() {
@@ -12,6 +13,7 @@ export default function Navbar() {
   const [profileOpen, setProfileOpen] = useState(false)
   const { user, isAuthenticated, logout, loginAs } = useAuth()
   const { favoritesCount } = useFavorites()
+  const { comparedCount } = useCompare()
   const location = useLocation()
   const navigate = useNavigate()
 
@@ -29,7 +31,7 @@ export default function Navbar() {
   const navLinks = [
     { path: '/properties', label: 'Buy', icon: <Building2 size={16} /> },
     { path: '/rent', label: 'Rent', icon: <Home size={16} /> },
-    { path: '/properties', label: 'Explore', icon: <Search size={16} /> },
+    { path: '/compare', label: 'Compare', icon: <GitCompare size={16} /> },
   ]
 
   const isActive = (path) => location.pathname === path
@@ -66,6 +68,13 @@ export default function Navbar() {
 
         {/* Actions */}
         <div className="navbar-actions">
+          <Link to="/compare" className="nav-action-btn compare-nav-btn" title="Property Comparison">
+            <GitCompare size={20} />
+            {comparedCount > 0 && (
+              <span className="favorites-badge" style={{ background: 'var(--color-primary)' }}>{comparedCount}</span>
+            )}
+          </Link>
+
           <Link to="/buyer/dashboard" className="nav-action-btn favorites-btn" title="Favorites">
             <Heart size={20} />
             {favoritesCount > 0 && (

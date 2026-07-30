@@ -288,7 +288,9 @@
 
 /* Responsive */
 @media (max-width: 900px) {
-  .filter-mobile-btn { display: flex; }
+  .filter-mobile-btn {
+    display: flex;
+  }
 
   .filter-sidebar {
     position: fixed;
@@ -305,8 +307,13 @@
     box-shadow: var(--shadow-xl);
   }
 
-  .sidebar-open { transform: translateX(0); }
-  .sidebar-close { display: block; }
+  .sidebar-open {
+    transform: translateX(0);
+  }
+
+  .sidebar-close {
+    display: block;
+  }
 
   .sidebar-backdrop {
     display: block;
@@ -327,5 +334,7 @@
     justify-content: space-between;
   }
 
-  .view-toggle { display: none; }
+  .view-toggle {
+    display: none;
+  }
 }

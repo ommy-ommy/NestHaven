@@ -9,6 +9,7 @@ import Home from './pages/Home'
 import Properties from './pages/Properties'
 import PropertyDetail from './pages/PropertyDetail'
 import RentPage from './pages/RentPage'
+import Compare from './pages/Compare'
 import Signup from './pages/Signup'
 import Login from './pages/Login'
 import SellerDashboard from './pages/SellerDashboard'
@@ -18,6 +19,7 @@ import Messages from './pages/Messages'
 import AdminDashboard from './pages/AdminDashboard'
 import AdminUsers from './pages/AdminUsers'
 import AdminProperties from './pages/AdminProperties'
+import CompareFloatingBar from './components/property/CompareFloatingBar'
 import './App.css'
 
 // Protected route wrapper
@@ -102,6 +104,7 @@ function App() {
           <Route path="/properties" element={<Properties />} />
           <Route path="/property/:id" element={<PropertyDetail />} />
           <Route path="/rent" element={<RentPage />} />
+          <Route path="/compare" element={<Compare />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
 
@@ -150,6 +153,9 @@ function App() {
         </Routes>
       </AnimatePresence>
       {!isAdminRoute && <Footer />}
+
+      {/* Floating Compare Drawer */}
+      <CompareFloatingBar />
 
       {/* Back to Top Button */}
       <button

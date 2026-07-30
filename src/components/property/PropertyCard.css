@@ -57,13 +57,51 @@
   z-index: 2;
 }
 
-/* Favorite */
-.pcard-fav {
+/* Favorite & Compare Action Buttons */
+.pcard-actions-top {
   position: absolute;
   top: 12px;
   right: 12px;
-  width: 36px;
-  height: 36px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  z-index: 3;
+}
+
+.pcard-compare-btn {
+  height: 34px;
+  padding: 0 10px;
+  border-radius: 20px;
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.pcard-compare-btn:hover {
+  background: rgba(15, 23, 42, 0.85);
+  border-color: var(--color-primary, #8ab641);
+  transform: scale(1.05);
+}
+
+.pcard-compare-btn.pcard-compare-active {
+  background: var(--color-primary, #8ab641);
+  border-color: var(--color-primary, #8ab641);
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(138, 182, 65, 0.4);
+}
+
+.pcard-fav {
+  width: 34px;
+  height: 34px;
   border-radius: var(--radius-full);
   background: rgba(0, 0, 0, 0.3);
   backdrop-filter: blur(8px);

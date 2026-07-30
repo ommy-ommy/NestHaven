@@ -1,15 +1,18 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Heart, MapPin, Maximize, BedDouble, Bath, ChevronLeft, ChevronRight, Star, Eye } from 'lucide-react'
+import { Heart, MapPin, Maximize, BedDouble, Bath, ChevronLeft, ChevronRight, Star, Eye, GitCompare } from 'lucide-react'
 import { formatPrice } from '../../data/properties'
 import { useFavorites } from '../../context/FavoriteContext'
+import { useCompare } from '../../context/CompareContext'
 import './PropertyCard.css'
 
 export default function PropertyCard({ property, layout = 'vertical' }) {
   const [imgIdx, setImgIdx] = useState(0)
   const [imgLoaded, setImgLoaded] = useState(false)
   const { isFavorite, toggleFavorite } = useFavorites()
+  const { isInCompare, toggleCompare } = useCompare()
   const fav = isFavorite(property.id)
+  const compared = isInCompare(property.id)
 
   const nextImg = (e) => {
     e.preventDefault()
@@ -49,10 +52,24 @@ export default function PropertyCard({ property, layout = 'vertical' }) {
           <span className="badge badge-dark">{property.listingType === 'rent' ? 'Rent' : 'Buy'}</span>
         </div>
 
-        {/* Favorite */}
-        <button className={`pcard-fav ${fav ? 'pcard-fav-active' : ''}`} onClick={handleFav} aria-label="Toggle favorite">
-          <Heart size={18} fill={fav ? '#E8695E' : 'none'} color={fav ? '#E8695E' : 'white'} />
-        </button>
+        {/* Favorite & Compare buttons */}
+        <div className="pcard-actions-top">
+          <button
+            className={`pcard-compare-btn ${compared ? 'pcard-compare-active' : ''}`}
+            onClick={(e) => {
+              e.preventDefault()
+              e.stopPropagation()
+              toggleCompare(property.id)
+            }}
+            title={compared ? 'Remove from comparison' : 'Add to comparison'}
+          >
+            <GitCompare size={15} />
+            <span className="compare-text">{compared ? 'Comparing' : 'Compare'}</span>
+          </button>
+          <button className={`pcard-fav ${fav ? 'pcard-fav-active' : ''}`} onClick={handleFav} aria-label="Toggle favorite">
+            <Heart size={18} fill={fav ? '#E8695E' : 'none'} color={fav ? '#E8695E' : 'white'} />
+          </button>
+        </div>
 
         {/* Image Nav */}
         {property.images.length > 1 && (

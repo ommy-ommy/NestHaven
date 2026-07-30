@@ -1,13 +1,16 @@
 import { useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { MapPin, BedDouble, Bath, Maximize, Building2, Compass, Star, Heart, Share2, Phone, MessageSquare, Calendar, ChevronLeft, ChevronRight, X, Eye, Clock, Shield, Check, Calculator, CheckCircle2 } from 'lucide-react'
+import { MapPin, BedDouble, Bath, Maximize, Building2, Compass, Star, Heart, Share2, Phone, MessageSquare, Calendar, ChevronLeft, ChevronRight, X, Eye, Clock, Shield, Check, Calculator, CheckCircle2, GitCompare } from 'lucide-react'
 import { properties, formatPrice } from '../data/properties'
 import { reviews, amenityLabels } from '../data/cities'
 import { useFavorites } from '../context/FavoriteContext'
+import { useCompare } from '../context/CompareContext'
 import { useAuth } from '../context/AuthContext'
 import { supabase } from '../lib/supabase'
 import PropertyCard from '../components/property/PropertyCard'
+import PropertyMap from '../components/property/PropertyMap'
+import NearbyPlaces from '../components/property/NearbyPlaces'
 import './PropertyDetail.css'
 
 export default function PropertyDetail() {
@@ -16,8 +19,10 @@ export default function PropertyDetail() {
   const propertyReviews = reviews.filter(r => r.propertyId === property.id)
   const similarProperties = properties.filter(p => p.id !== property.id && p.city === property.city).slice(0, 3)
   const { isFavorite, toggleFavorite } = useFavorites()
+  const { isInCompare, toggleCompare } = useCompare()
   const { user } = useAuth()
   const fav = isFavorite(property.id)
+  const compared = isInCompare(property.id)
 
   const [activeImg, setActiveImg] = useState(0)
   const [lightbox, setLightbox] = useState(false)
@@ -27,6 +32,7 @@ export default function PropertyDetail() {
   const [meetingTime, setMeetingTime] = useState('10:00 AM')
   const [customMessage, setCustomMessage] = useState('')
   const [bookingSuccess, setBookingSuccess] = useState(false)
+  const [selectedMapPlace, setSelectedMapPlace] = useState(null)
 
   const [emiMonths, setEmiMonths] = useState(240)
   const [emiRate, setEmiRate] = useState(8.5)
@@ -137,6 +143,14 @@ export default function PropertyDetail() {
                 <span>{property.address}</span>
               </div>
               <div className="detail-actions-row">
+                <button
+                  className={`btn btn-ghost ${compared ? 'compare-active' : ''}`}
+                  onClick={() => toggleCompare(property.id)}
+                  style={compared ? { background: 'var(--color-primary-lighter)', color: 'var(--color-primary-dark)', fontWeight: 600 } : {}}
+                >
+                  <GitCompare size={18} color={compared ? 'var(--color-primary)' : 'currentColor'} />
+                  {compared ? 'In Comparison' : 'Compare'}
+                </button>
                 <button className={`btn btn-ghost ${fav ? 'fav-active' : ''}`} onClick={() => toggleFavorite(property.id)}>
                   <Heart size={18} fill={fav ? '#E8695E' : 'none'} color={fav ? '#E8695E' : 'currentColor'} />
                   {fav ? 'Saved' : 'Save'}
@@ -213,6 +227,20 @@ export default function PropertyDetail() {
                 </div>
               </div>
             )}
+
+            {/* Interactive Map & Directions */}
+            <div className="detail-section" id="property-map-section">
+              <PropertyMap property={property} selectedPlace={selectedMapPlace} />
+            </div>
+
+            {/* Nearby Places Section (16 Categories) */}
+            <NearbyPlaces
+              property={property}
+              onSelectPlaceOnMap={(place) => {
+                setSelectedMapPlace(place)
+                document.getElementById('property-map-section')?.scrollIntoView({ behavior: 'smooth' })
+              }}
+            />
 
             {/* Reviews */}
             <div className="detail-section">

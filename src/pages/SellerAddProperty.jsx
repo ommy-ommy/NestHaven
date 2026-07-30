@@ -72,6 +72,16 @@ export default function SellerAddProperty() {
 
     const coverImage = form.imageUrl || uploadedUrl || 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=800&q=80'
 
+    const CITY_COORDS = {
+      Mumbai: { lat: 19.0760, lng: 72.8777 },
+      Bangalore: { lat: 12.9716, lng: 77.5946 },
+      Delhi: { lat: 28.6139, lng: 77.2090 },
+      Pune: { lat: 18.5204, lng: 73.8567 },
+      Gurgaon: { lat: 28.4595, lng: 77.0266 },
+    }
+
+    const defaultCoord = CITY_COORDS[form.city] || { lat: 19.0760, lng: 72.8777 }
+
     const newProperty = {
       title: form.title || 'Modern Apartment',
       price: Number(form.price) || 12500000,
@@ -82,6 +92,8 @@ export default function SellerAddProperty() {
       sqft: Number(form.sqft),
       location: form.address || `${form.locality}, ${form.city}`,
       city: form.city,
+      lat: form.lat ? Number(form.lat) : defaultCoord.lat,
+      lng: form.lng ? Number(form.lng) : defaultCoord.lng,
       description: form.description,
       image: coverImage,
       amenities: form.selectedAmenities.length > 0 ? form.selectedAmenities : ['Parking', 'Security'],

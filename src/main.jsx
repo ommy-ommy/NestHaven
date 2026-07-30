@@ -5,6 +5,7 @@ import App from './App'
 import { AuthProvider } from './context/AuthContext'
 import { PropertyProvider } from './context/PropertyContext'
 import { FavoriteProvider } from './context/FavoriteContext'
+import { CompareProvider } from './context/CompareContext'
 import './index.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
@@ -13,7 +14,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       <AuthProvider>
         <PropertyProvider>
           <FavoriteProvider>
-            <App />
+            <CompareProvider>
+              <App />
+            </CompareProvider>
           </FavoriteProvider>
         </PropertyProvider>
       </AuthProvider>
