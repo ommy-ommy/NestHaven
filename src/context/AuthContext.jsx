@@ -223,6 +223,32 @@ export function AuthProvider({ children }) {
     setUser(mockUsers[role])
   }
 
+  // Login with custom or simulated Google account
+  const loginWithGoogleAccount = (googleUserData) => {
+    setAuthError(null)
+    const newUser = {
+      id: googleUserData?.id || `google_${Date.now()}`,
+      name: googleUserData?.name || 'Google User',
+      email: googleUserData?.email || 'user@gmail.com',
+      phone: '+91 98765 43210',
+      role: googleUserData?.role || 'buyer',
+      avatar: googleUserData?.avatar || null,
+      company: googleUserData?.role === 'seller' ? 'Independent Seller' : null,
+      experience: '1-3 years',
+      verified: true,
+      propertiesVisited: 12,
+      propertiesOwned: 1,
+      favoriteCount: 8,
+      meetingsScheduled: 3,
+      creditCards: [
+        { last4: '4242', brand: 'Visa', expiry: '12/27' },
+        { last4: '8888', brand: 'Mastercard', expiry: '06/28' },
+      ],
+    }
+    setUser(newUser)
+    return newUser
+  }
+
   const logout = async () => {
     setAuthError(null)
     try {

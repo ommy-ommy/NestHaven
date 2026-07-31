@@ -15,6 +15,18 @@ export class ErrorBoundary extends React.Component {
   }
 
   handleReload = () => {
+    this.setState({ hasError: false, error: null })
+    window.location.href = '/'
+  }
+
+  handleResetAndReload = () => {
+    try {
+      localStorage.clear()
+      sessionStorage.clear()
+    } catch (err) {
+      console.error('Error clearing storage:', err)
+    }
+    this.setState({ hasError: false, error: null })
     window.location.href = '/'
   }
 
@@ -49,23 +61,40 @@ export class ErrorBoundary extends React.Component {
             <p style={{ color: '#64748b', fontSize: '0.95rem', marginBottom: '1.5rem', lineHeight: '1.5' }}>
               Something went wrong loading this page. Click below to refresh and load the application.
             </p>
-            <button
-              onClick={this.handleReload}
-              style={{
-                backgroundColor: '#8ab641',
-                color: '#ffffff',
-                border: 'none',
-                padding: '0.75rem 1.75rem',
-                borderRadius: '50px',
-                fontSize: '0.95rem',
-                fontWeight: '600',
-                cursor: 'pointer',
-                boxShadow: '0 4px 14px rgba(138, 182, 65, 0.3)',
-                transition: 'all 0.2s ease'
-              }}
-            >
-              Reload NestHaven Home
-            </button>
+            <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+              <button
+                onClick={this.handleReload}
+                style={{
+                  backgroundColor: '#8ab641',
+                  color: '#ffffff',
+                  border: 'none',
+                  padding: '0.75rem 1.75rem',
+                  borderRadius: '50px',
+                  fontSize: '0.95rem',
+                  fontWeight: '600',
+                  cursor: 'pointer',
+                  boxShadow: '0 4px 14px rgba(138, 182, 65, 0.3)',
+                  transition: 'all 0.2s ease'
+                }}
+              >
+                Reload Home Page
+              </button>
+              <button
+                onClick={this.handleResetAndReload}
+                style={{
+                  backgroundColor: '#f1f5f9',
+                  color: '#475569',
+                  border: '1px solid #cbd5e1',
+                  padding: '0.75rem 1.25rem',
+                  borderRadius: '50px',
+                  fontSize: '0.9rem',
+                  fontWeight: '600',
+                  cursor: 'pointer'
+                }}
+              >
+                Reset Data & Reload
+              </button>
+            </div>
           </div>
         </div>
       )
