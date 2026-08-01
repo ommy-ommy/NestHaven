@@ -19,6 +19,7 @@ import Messages from './pages/Messages'
 import AdminDashboard from './pages/AdminDashboard'
 import AdminUsers from './pages/AdminUsers'
 import AdminProperties from './pages/AdminProperties'
+import AdminDocuments from './pages/AdminDocuments'
 import CompareFloatingBar from './components/property/CompareFloatingBar'
 import './App.css'
 
@@ -148,6 +149,7 @@ function App() {
 
           {/* Admin Routes */}
           <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/admin/documents" element={<AdminDocuments />} />
           <Route path="/admin/users" element={<AdminUsers />} />
           <Route path="/admin/properties" element={<AdminProperties />} />
         </Routes>

@@ -11,6 +11,7 @@ import { supabase } from '../lib/supabase'
 import PropertyCard from '../components/property/PropertyCard'
 import PropertyMap from '../components/property/PropertyMap'
 import NearbyPlaces from '../components/property/NearbyPlaces'
+import PropertyDocumentsTab from '../components/document/PropertyDocumentsTab'
 import './PropertyDetail.css'
 
 export default function PropertyDetail() {
@@ -241,6 +242,9 @@ export default function PropertyDetail() {
                 document.getElementById('property-map-section')?.scrollIntoView({ behavior: 'smooth' })
               }}
             />
+
+            {/* Property Documents & Legal Verification Tab */}
+            <PropertyDocumentsTab propertyId={property.id} propertyTitle={property.title} />
 
             {/* Reviews */}
             <div className="detail-section">

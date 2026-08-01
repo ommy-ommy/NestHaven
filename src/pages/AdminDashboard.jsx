@@ -1,13 +1,14 @@
 import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { LayoutDashboard, Users, Building2, Flag, Settings, Home, TrendingUp, Eye, UserCheck, DollarSign, BarChart3 } from 'lucide-react'
+import { LayoutDashboard, Users, Building2, Flag, Settings, Home, TrendingUp, Eye, UserCheck, DollarSign, BarChart3, FileCheck } from 'lucide-react'
 import './Admin.css'
 
 function AdminLayout({ children }) {
   const location = useLocation()
   const links = [
     { path: '/admin', icon: <LayoutDashboard size={18} />, label: 'Dashboard' },
+    { path: '/admin/documents', icon: <FileCheck size={18} />, label: 'Doc Verification' },
     { path: '/admin/users', icon: <Users size={18} />, label: 'Users' },
     { path: '/admin/properties', icon: <Building2 size={18} />, label: 'Properties' },
   ]

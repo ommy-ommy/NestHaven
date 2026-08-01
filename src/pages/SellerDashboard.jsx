@@ -1,13 +1,18 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Building2, Eye, MessageSquare, Star, Plus, Edit3, Trash2, TrendingUp, Users, BarChart3 } from 'lucide-react'
+import { Building2, Eye, MessageSquare, Star, Plus, Edit3, Trash2, TrendingUp, Users, BarChart3, FileText, ShieldCheck } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { properties, formatPrice } from '../data/properties'
+import SellerDocumentUploadModal from '../components/document/SellerDocumentUploadModal'
 import './Dashboard.css'
 
 export default function SellerDashboard() {
   const { user } = useAuth()
   const myListings = properties.filter(p => p.sellerId === 's1')
+
+  const [selectedPropertyForUpload, setSelectedPropertyForUpload] = useState(null)
+  const [showUploadModal, setShowUploadModal] = useState(false)
 
   const stats = [
     { icon: <Building2 size={22} />, label: 'Total Listings', value: user?.totalListings || 24, color: 'var(--color-primary)' },
@@ -113,6 +118,18 @@ export default function SellerDashboard() {
                     <td><span className="table-rating"><Star size={12} fill="var(--color-accent)" color="var(--color-accent)" /> {p.rating}</span></td>
                     <td>
                       <div className="table-actions">
+                        <button
+                          className="btn btn-secondary btn-sm"
+                          style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '0.78rem' }}
+                          onClick={() => {
+                            setSelectedPropertyForUpload(p)
+                            setShowUploadModal(true)
+                          }}
+                          title="Upload & Manage Legal Verification Documents"
+                        >
+                          <FileText size={13} />
+                          Upload Docs
+                        </button>
                         <button className="btn btn-ghost btn-sm"><Edit3 size={14} /></button>
                         <button className="btn btn-ghost btn-sm" style={{ color: 'var(--color-coral)' }}><Trash2 size={14} /></button>
                       </div>
@@ -150,6 +167,14 @@ export default function SellerDashboard() {
           </div>
         </div>
       </div>
+
+      <SellerDocumentUploadModal
+        isOpen={showUploadModal}
+        onClose={() => setShowUploadModal(false)}
+        propertyId={selectedPropertyForUpload?.id}
+        propertyTitle={selectedPropertyForUpload?.title}
+        currentUser={user}
+      />
     </motion.div>
   )
 }
