@@ -22,15 +22,13 @@ const initialVerificationRequests = [
     sellerEmail: 'arjun@nesthaven.com',
     sellerRole: 'seller',
     submittedDate: '2026-07-20',
-    status: 'Approved', // 'Pending Approval' | 'Approved' | 'Rejected'
+    status: 'Approved',
     assignedBadges: ['verified_owner', 'government_verified', 'premium_listing', 'verified_document'],
     adminNotes: 'Government registration records and BMC clearance validated on 2026-07-21.',
     documents: {
       identityProof: { name: 'Aadhaar_Arjun_Mehta.pdf', type: 'Identity Proof', url: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf' },
       ownershipDocument: { name: 'Property_Sale_Deed_Registry.pdf', type: 'Ownership Document', url: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf' },
       propertyTaxReceipt: { name: 'BMC_Tax_Receipt_2025-26.pdf', type: 'Property Tax Receipt', url: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf' },
-      businessLicense: null,
-      gstCertificate: null,
     },
   },
   {
@@ -58,19 +56,85 @@ const initialVerificationRequests = [
     propertyId: 'p3',
     propertyTitle: 'Spacious Villa with Private Garden',
     sellerId: 's3',
-    sellerName: 'Sneha Patel',
-    sellerEmail: 'sneha.patel@gmail.com',
+    sellerName: 'Vikram Singh',
+    sellerEmail: 'vikram.singh@royalestate.com',
     sellerRole: 'seller',
     submittedDate: '2026-07-28',
-    status: 'Pending Approval',
-    assignedBadges: [],
-    adminNotes: 'Submitted for verification review.',
+    status: 'Approved',
+    assignedBadges: ['verified_owner', 'government_verified', 'verified_document'],
+    adminNotes: 'DLF Phase 5 Villa Title Deed and MCG tax receipt verified.',
     documents: {
-      identityProof: { name: 'Voter_ID_Sneha_Patel.png', type: 'Identity Proof', url: 'https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=1000&q=80' },
+      identityProof: { name: 'Aadhaar_Vikram_Singh.pdf', type: 'Identity Proof', url: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf' },
       ownershipDocument: { name: 'DLF_Phase5_Villa_Registry.pdf', type: 'Ownership Document', url: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf' },
       propertyTaxReceipt: { name: 'Gurgaon_MCG_Tax_Paid.pdf', type: 'Property Tax Receipt', url: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf' },
-      businessLicense: null,
-      gstCertificate: null,
+    },
+  },
+  {
+    id: 'ver_105',
+    propertyId: 'p5',
+    propertyTitle: 'Waterfront Luxury Duplex in Bandra West',
+    sellerId: 's5',
+    sellerName: 'Rajesh Sharma',
+    sellerEmail: 'rajesh@sharmarealty.com',
+    sellerRole: 'seller',
+    submittedDate: '2026-07-29',
+    status: 'Approved',
+    assignedBadges: ['verified_agent', 'premium_listing', 'verified_document'],
+    adminNotes: 'RERA Registration & Bandra Title verified.',
+    documents: {
+      identityProof: { name: 'Pan_Rajesh_Sharma.pdf', type: 'Identity Proof', url: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf' },
+      ownershipDocument: { name: 'Bandra_Duplex_Registry.pdf', type: 'Ownership Document', url: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf' },
+    },
+  },
+  {
+    id: 'ver_107',
+    propertyId: 'p7',
+    propertyTitle: 'High-End Smart Residence in Hitech City',
+    sellerId: 's7',
+    sellerName: 'Aarav Reddy',
+    sellerEmail: 'aarav@reddyhousing.com',
+    sellerRole: 'seller',
+    submittedDate: '2026-07-30',
+    status: 'Approved',
+    assignedBadges: ['verified_owner', 'business_verified', 'government_verified'],
+    adminNotes: 'GHMC approval and Telangana RERA clearance verified.',
+    documents: {
+      identityProof: { name: 'Aadhaar_Aarav_Reddy.pdf', type: 'Identity Proof', url: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf' },
+      ownershipDocument: { name: 'GHMC_Building_Approval.pdf', type: 'Ownership Document', url: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf' },
+    },
+  },
+  {
+    id: 'ver_109',
+    propertyId: 'p9',
+    propertyTitle: 'Modern Sea Facing Flat in ECR Beach Road',
+    sellerId: 's9',
+    sellerName: 'Karthik Raman',
+    sellerEmail: 'karthik@chennaiproperties.com',
+    sellerRole: 'seller',
+    submittedDate: '2026-07-31',
+    status: 'Approved',
+    assignedBadges: ['verified_agent', 'premium_listing', 'government_verified', 'verified_document'],
+    adminNotes: 'CMDA approval & ECR title deed verified.',
+    documents: {
+      identityProof: { name: 'Passport_Karthik.pdf', type: 'Identity Proof', url: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf' },
+      ownershipDocument: { name: 'CMDA_Sale_Deed.pdf', type: 'Ownership Document', url: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf' },
+    },
+  },
+  {
+    id: 'ver_111',
+    propertyId: 'p11',
+    propertyTitle: 'Elegant 3BHK Apartment in Viman Nagar',
+    sellerId: 's11',
+    sellerName: 'Amit Joshi',
+    sellerEmail: 'amit@punehomes.com',
+    sellerRole: 'seller',
+    submittedDate: '2026-08-01',
+    status: 'Approved',
+    assignedBadges: ['verified_owner', 'government_verified', 'verified_document'],
+    adminNotes: 'PMC Tax receipt & Viman Nagar registry verified.',
+    documents: {
+      identityProof: { name: 'Aadhaar_Amit_Joshi.pdf', type: 'Identity Proof', url: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf' },
+      ownershipDocument: { name: 'PMC_Khata_Certificate.pdf', type: 'Ownership Document', url: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf' },
     },
   },
 ]
@@ -80,11 +144,15 @@ export function VerificationProvider({ children }) {
     const saved = localStorage.getItem('nesthaven_verification_requests')
     if (saved) {
       try {
-        return JSON.parse(saved)
+        const parsed = JSON.parse(saved)
+        if (parsed.length >= initialVerificationRequests.length) {
+          return parsed
+        }
       } catch (e) {
-        console.error('Failed to parse saved nesthaven_verification_requests:', e)
+        console.error(e)
       }
     }
+    localStorage.setItem('nesthaven_verification_requests', JSON.stringify(initialVerificationRequests))
     return initialVerificationRequests
   })
 

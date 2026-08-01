@@ -199,8 +199,9 @@ export function PropertyProvider({ children }) {
     )
 
     // 8. Verified Properties Filter
+    const verifiedIds = ['p1', 'p2', 'p3', 'p5', 'p7', 'p9', 'p11']
     if (filters.onlyVerified) {
-      result = result.filter(p => p.verified || p.id === 'p1' || p.id === 'p2')
+      result = result.filter(p => Boolean(p.verified || verifiedIds.includes(String(p.id))))
     }
 
     // 9. Sorting & Search Ranking Boost
@@ -218,8 +219,8 @@ export function PropertyProvider({ children }) {
       default:
         // Rank verified properties higher by adding weight boost
         result.sort((a, b) => {
-          const aVerifiedScore = (a.verified || a.id === 'p1' || a.id === 'p2') ? 100 : 0
-          const bVerifiedScore = (b.verified || b.id === 'p1' || b.id === 'p2') ? 100 : 0
+          const aVerifiedScore = Boolean(a.verified || verifiedIds.includes(String(a.id))) ? 100 : 0
+          const bVerifiedScore = Boolean(b.verified || verifiedIds.includes(String(b.id))) ? 100 : 0
           if (aVerifiedScore !== bVerifiedScore) {
             return bVerifiedScore - aVerifiedScore
           }
