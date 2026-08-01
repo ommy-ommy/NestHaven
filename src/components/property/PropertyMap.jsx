@@ -30,9 +30,9 @@ export default function PropertyMap({ property, selectedPlace = null }) {
 
   // Map Tile Layers Configuration (Google Tile Engine)
   const tileUrls = {
-    roadmap: 'https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',
-    satellite: 'https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', // Hybrid Satellite + Labels
-    terrain: 'https://mt1.google.com/vt/lyrs=p&x={x}&y={y}&z={z}',
+    roadmap: 'https://mt{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',
+    satellite: 'https://mt{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', // Hybrid Satellite + Labels
+    terrain: 'https://mt{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}',
   }
 
   // Initialize map
@@ -47,14 +47,33 @@ export default function PropertyMap({ property, selectedPlace = null }) {
       attributionControl: false,
     })
 
-    // Add initial Google tile layer
+    // Add initial Google tile layer with subdomain distribution
     const initialLayer = L.tileLayer(tileUrls[mapType], {
       maxZoom: 20,
-      subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+      subdomains: ['0', '1', '2', '3'],
     }).addTo(map)
 
     layerRef.current = initialLayer
     mapInstanceRef.current = map
+
+    // Trigger Leaflet viewport size re-calculation to ensure full 100% tile coverage
+    const timer1 = setTimeout(() => {
+      if (mapInstanceRef.current) mapInstanceRef.current.invalidateSize()
+    }, 100)
+
+    const timer2 = setTimeout(() => {
+      if (mapInstanceRef.current) mapInstanceRef.current.invalidateSize()
+    }, 500)
+
+    const resizeObserver = new ResizeObserver(() => {
+      if (mapInstanceRef.current) {
+        mapInstanceRef.current.invalidateSize()
+      }
+    })
+
+    if (containerRef.current) {
+      resizeObserver.observe(containerRef.current)
+    }
 
     // Custom Property Marker Icon with Glassmorphism Badge & Pulse
     const propertyIcon = L.divIcon({
@@ -88,6 +107,9 @@ export default function PropertyMap({ property, selectedPlace = null }) {
     markersRef.current.main = mainMarker
 
     return () => {
+      clearTimeout(timer1)
+      clearTimeout(timer2)
+      if (resizeObserver) resizeObserver.disconnect()
       if (mapInstanceRef.current) {
         mapInstanceRef.current.remove()
         mapInstanceRef.current = null
@@ -102,10 +124,11 @@ export default function PropertyMap({ property, selectedPlace = null }) {
     mapInstanceRef.current.removeLayer(layerRef.current)
     const newLayer = L.tileLayer(tileUrls[mapType], {
       maxZoom: 20,
-      subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+      subdomains: ['0', '1', '2', '3'],
     }).addTo(mapInstanceRef.current)
 
     layerRef.current = newLayer
+    mapInstanceRef.current.invalidateSize()
   }, [mapType])
 
   // Fly to selected place if user clicks "View on Map" in Nearby Places
