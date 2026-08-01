@@ -1,279 +1,350 @@
-/* ==========================================================================
-   NearbyPlaces CSS - Glassmorphism Cards & Responsive Grid
-   ========================================================================== */
+/* Nearby Places Dashboard Styling */
 
-.nearby-places-section {
+.nearby-dashboard-container {
   margin-top: 2.5rem;
-  padding: 1.75rem;
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.5);
+  padding: 2rem;
+  background: #ffffff;
   border-radius: var(--radius-xl, 16px);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--color-border, #e2e8f0);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
 }
 
-.nearby-header {
+.nearby-dash-header {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid #f1f5f9;
+  flex-wrap: wrap;
   gap: 1rem;
-  margin-bottom: 1.25rem;
 }
 
-.nearby-title {
-  display: flex;
+.nearby-badge {
+  display: inline-flex;
   align-items: center;
-  gap: 0.6rem;
-  font-size: var(--fs-xl, 1.25rem);
+  gap: 0.4rem;
+  font-size: 0.78rem;
   font-weight: 700;
-  color: var(--color-text-main, #0f172a);
-  margin: 0 0 0.35rem 0;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-primary-dark, #5d8225);
+  background: rgba(138, 182, 65, 0.12);
+  padding: 4px 10px;
+  border-radius: 20px;
+  margin-bottom: 0.5rem;
+}
+
+.nearby-header-left h3 {
+  margin: 0 0 4px 0;
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #0f172a;
 }
 
 .nearby-subtitle {
-  font-size: var(--fs-sm, 0.875rem);
-  color: var(--color-text-secondary, #64748b);
   margin: 0;
+  font-size: 0.88rem;
+  color: #64748b;
 }
 
-.nearby-total-badge {
-  padding: 0.4rem 0.85rem;
-  background: var(--color-primary-lighter, rgba(138, 182, 65, 0.15));
-  color: var(--color-primary-dark, #5d8225);
-  border-radius: 20px;
-  font-size: 0.8rem;
-  font-weight: 700;
-  white-space: nowrap;
-}
-
-/* Group Tabs */
-.nearby-group-tabs {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
-  margin-bottom: 1.25rem;
-}
-
-.group-tab {
-  background: rgba(0, 0, 0, 0.04);
-  border: none;
-  padding: 0.45rem 0.95rem;
-  border-radius: var(--radius-md, 8px);
-  font-size: 0.82rem;
-  font-weight: 600;
-  color: var(--color-text-secondary, #475569);
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.group-tab:hover {
-  background: rgba(0, 0, 0, 0.08);
-  color: var(--color-text-main, #0f172a);
-}
-
-.group-tab.active {
-  background: var(--color-text-main, #0f172a);
-  color: #ffffff;
-  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.2);
-}
-
-/* Category Pills Row */
-.nearby-pills-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-bottom: 1.25rem;
-}
-
-.cat-pill {
+/* Sort Controls */
+.nearby-sort-controls {
   display: flex;
   align-items: center;
-  gap: 0.45rem;
-  background: #ffffff;
+  gap: 0.5rem;
+  background: #f8fafc;
+  padding: 4px;
+  border-radius: var(--radius-lg, 12px);
   border: 1px solid #e2e8f0;
+}
+
+.sort-label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #64748b;
+  padding: 0 6px;
+}
+
+.sort-btn {
+  background: transparent;
+  border: none;
   padding: 0.4rem 0.85rem;
-  border-radius: 20px;
   font-size: 0.8rem;
   font-weight: 600;
-  color: var(--color-text-main, #334155);
+  color: #64748b;
+  border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
-.cat-pill:hover {
-  border-color: var(--color-primary, #8ab641);
-  transform: translateY(-1px);
+.sort-btn:hover {
+  color: #0f172a;
 }
 
-.cat-pill.active {
+.sort-btn.sort-active {
+  background: #ffffff;
+  color: var(--color-primary-dark, #5d8225);
+  font-weight: 700;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+/* Controls & Pills Bar */
+.nearby-controls-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.nearby-search-box {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1rem;
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: var(--radius-lg, 12px);
+  width: 100%;
+}
+
+.nearby-search-box input {
+  border: none;
+  background: transparent;
+  outline: none;
+  width: 100%;
+  font-size: 0.88rem;
+  color: #0f172a;
+}
+
+.nearby-category-pills {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+  scrollbar-width: thin;
+}
+
+.category-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.85rem;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #475569;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.category-pill:hover {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+  color: #0f172a;
+}
+
+.category-pill.pill-active {
   background: var(--color-primary, #8ab641);
   color: #ffffff;
   border-color: var(--color-primary, #8ab641);
-  box-shadow: 0 4px 10px rgba(138, 182, 65, 0.3);
+  box-shadow: 0 4px 12px rgba(138, 182, 65, 0.25);
 }
 
 .pill-count {
-  background: rgba(0, 0, 0, 0.06);
+  font-size: 0.72rem;
   padding: 1px 6px;
   border-radius: 10px;
-  font-size: 0.72rem;
+  background: rgba(0, 0, 0, 0.08);
 }
 
-.cat-pill.active .pill-count {
+.category-pill.pill-active .pill-count {
   background: rgba(255, 255, 255, 0.25);
   color: #ffffff;
 }
 
-/* Search Bar */
-.nearby-search-bar {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  background: #ffffff;
-  border: 1px solid #cbd5e1;
-  padding: 0.65rem 1rem;
-  border-radius: var(--radius-lg, 12px);
-  margin-bottom: 1.5rem;
-  transition: border-color 0.2s ease;
-}
-
-.nearby-search-bar:focus-within {
-  border-color: var(--color-primary, #8ab641);
-  box-shadow: 0 0 0 3px rgba(138, 182, 65, 0.15);
-}
-
-.nearby-search-bar input {
-  border: none;
-  outline: none;
-  width: 100%;
-  font-size: 0.88rem;
-  color: var(--color-text-main, #0f172a);
-}
-
-.clear-search-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: #94a3b8;
-  font-size: 0.9rem;
-}
-
 /* Places Cards Grid */
-.nearby-grid {
+.nearby-places-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 1.1rem;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.25rem;
 }
 
-.nearby-card {
-  background: #ffffff;
-  border: 1px solid rgba(226, 232, 240, 0.8);
+.empty-places-state {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 3rem 1rem;
+  background: #f8fafc;
   border-radius: var(--radius-lg, 12px);
-  padding: 1.1rem;
+  color: #64748b;
+}
+
+.nearby-place-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: var(--radius-lg, 12px);
+  padding: 1.25rem;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  transition: all 0.25 ease;
-  position: relative;
+  transition: all 0.2s ease;
 }
 
-.nearby-card:hover {
-  transform: translateY(-3px);
-  border-color: var(--color-primary, #8ab641);
-  box-shadow: 0 12px 24px -6px rgba(0, 0, 0, 0.08);
-}
-
-.card-top-row {
+.place-card-header {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 0.75rem;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin-bottom: 0.85rem;
 }
 
-.card-icon-badge {
-  width: 38px;
-  height: 38px;
+.place-icon-box {
+  width: 42px;
+  height: 42px;
   border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
+  shrink: 0;
 }
 
-.card-rating {
+.place-header-details {
   display: flex;
-  align-items: center;
-  gap: 0.25rem;
-  font-size: 0.8rem;
-  font-weight: 700;
-  color: #0f172a;
-  background: #fffbe6;
-  padding: 2px 7px;
-  border-radius: 12px;
-  border: 1px solid #fde68a;
+  flex-direction: column;
+  overflow: hidden;
 }
 
-.card-place-name {
+.place-cat-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.place-title {
+  margin: 2px 0 0 0;
   font-size: 0.95rem;
   font-weight: 700;
-  color: var(--color-text-main, #0f172a);
-  margin: 0 0 0.25rem 0;
-  line-height: 1.35;
+  color: #0f172a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.card-category-tag {
+.place-card-stats {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.65rem;
+  font-size: 0.82rem;
+}
+
+.place-dist-badge {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #0f172a;
+}
+
+.place-time {
+  font-size: 0.78rem;
+  color: #64748b;
+}
+
+.place-rating-badge {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 0.8rem;
+  color: #0f172a;
+  background: #fefce8;
+  padding: 2px 6px;
+  border-radius: 6px;
+  border: 1px solid #fef08a;
+}
+
+.place-status-row {
+  margin-bottom: 0.85rem;
+}
+
+.open-status-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   font-size: 0.75rem;
-  color: var(--color-text-muted, #64748b);
-  margin-bottom: 0.85rem;
-  display: block;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 12px;
 }
 
-.card-metrics-row {
+.tag-open {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.tag-closed {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.place-card-actions {
   display: flex;
   align-items: center;
-  gap: 0.85rem;
-  padding-top: 0.6rem;
-  border-top: 1px dashed #e2e8f0;
-  margin-bottom: 0.85rem;
+  gap: 0.5rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid #f1f5f9;
 }
 
-.metric-item {
-  display: flex;
-  align-items: center;
-  gap: 0.35rem;
-  font-size: 0.78rem;
-  color: var(--color-text-secondary, #475569);
-}
-
-.view-map-btn {
-  width: 100%;
-  padding: 0.45rem;
-  font-size: 0.78rem;
-  border-radius: 8px;
-  display: flex;
+.place-action-btn {
+  flex: 1;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.35rem;
+  gap: 4px;
+  padding: 0.45rem 0.65rem;
+  border-radius: 8px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  text-decoration: none;
+  transition: all 0.2s ease;
 }
 
-.nearby-empty-state {
-  grid-column: 1 / -1;
-  text-align: center;
-  padding: 2.5rem 1rem;
-  color: var(--color-text-secondary);
+.btn-map-view {
+  background: #f1f5f9;
+  color: #334155;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-  .nearby-places-section {
-    padding: 1.1rem;
+.btn-map-view:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+.btn-google-nav {
+  background: var(--color-primary, #8ab641);
+  color: #ffffff;
+}
+
+.btn-google-nav:hover {
+  background: var(--color-primary-dark, #5d8225);
+}
+
+@media (max-width: 640px) {
+  .nearby-dashboard-container {
+    padding: 1.25rem;
   }
-  .nearby-header {
+  .nearby-dash-header {
     flex-direction: column;
+    gap: 0.75rem;
   }
-  .nearby-grid {
-    grid-template-columns: 1fr;
+  .place-card-actions {
+    flex-direction: column;
   }
 }

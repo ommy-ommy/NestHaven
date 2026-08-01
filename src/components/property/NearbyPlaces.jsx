@@ -1,56 +1,58 @@
 import { useState, useMemo } from 'react'
+import { motion } from 'framer-motion'
 import {
   GraduationCap,
-  School,
   Hospital,
-  Pill,
   Utensils,
+  Hotel,
   Coffee,
   Dumbbell,
-  Trees,
-  ShoppingBag,
-  Fuel,
-  TrainTrack,
+  TrainFront,
   Bus,
-  Train,
-  Plane,
+  ShoppingBag,
+  Landmark,
   CreditCard,
+  ShieldAlert,
+  Fuel,
+  Trees,
   MapPin,
   Star,
   Search,
   Navigation,
   Clock,
   Compass,
+  ExternalLink,
+  ArrowUpDown,
+  CheckCircle2,
+  XCircle,
 } from 'lucide-react'
 import {
   getNearbyPlaces,
   NEARBY_CATEGORIES,
-  CATEGORY_GROUPS,
 } from '../../utils/nearbyPlaces'
 import './NearbyPlaces.css'
 
-// Icon mapping helper
+// Dynamic icon mapping for all 14 categories
 const ICON_MAP = {
   GraduationCap,
-  School,
   Hospital,
-  Pill,
   Utensils,
+  Hotel,
   Coffee,
   Dumbbell,
-  Trees,
-  ShoppingBag,
-  Fuel,
-  TrainTrack,
+  TrainFront,
   Bus,
-  Train,
-  Plane,
+  ShoppingBag,
+  Landmark,
   CreditCard,
+  ShieldAlert,
+  Fuel,
+  Trees,
 }
 
 export default function NearbyPlaces({ property, onSelectPlaceOnMap }) {
-  const [selectedGroup, setSelectedGroup] = useState('all')
   const [activeCategory, setActiveCategory] = useState('all')
+  const [sortBy, setSortBy] = useState('distance') // 'distance' | 'rating'
   const [searchQuery, setSearchQuery] = useState('')
 
   const lat = property.lat || 19.0096
@@ -58,12 +60,12 @@ export default function NearbyPlaces({ property, onSelectPlaceOnMap }) {
   const city = property.city || 'Mumbai'
   const locality = property.locality || 'Central'
 
-  // Generate all nearby places using property coordinates
+  // Generate all nearby places for property coordinates
   const places = useMemo(() => {
     return getNearbyPlaces(lat, lng, city, locality)
   }, [lat, lng, city, locality])
 
-  // Count places per category
+  // Count per category
   const categoryCounts = useMemo(() => {
     const counts = { all: places.length }
     places.forEach(p => {
@@ -72,11 +74,9 @@ export default function NearbyPlaces({ property, onSelectPlaceOnMap }) {
     return counts
   }, [places])
 
-  // Filter places based on selected group, active category, and search query
-  const filteredPlaces = useMemo(() => {
-    return places.filter(place => {
-      const matchesGroup =
-        selectedGroup === 'all' || place.group === selectedGroup
+  // Filter and sort places
+  const processedPlaces = useMemo(() => {
+    let result = places.filter(place => {
       const matchesCategory =
         activeCategory === 'all' || place.categoryId === activeCategory
       const matchesSearch =
@@ -84,136 +84,159 @@ export default function NearbyPlaces({ property, onSelectPlaceOnMap }) {
         place.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         place.categoryLabel.toLowerCase().includes(searchQuery.toLowerCase())
 
-      return matchesGroup && matchesCategory && matchesSearch
+      return matchesCategory && matchesSearch
     })
-  }, [places, selectedGroup, activeCategory, searchQuery])
 
-  // Render Icon dynamically
+    if (sortBy === 'rating') {
+      result.sort((a, b) => b.rating - a.rating)
+    } else {
+      result.sort((a, b) => a.distanceKm - b.distanceKm)
+    }
+
+    return result
+  }, [places, activeCategory, searchQuery, sortBy])
+
+  // Helper to render icon
   const renderCategoryIcon = (iconName, color, size = 18) => {
     const IconComponent = ICON_MAP[iconName] || MapPin
     return <IconComponent size={size} color={color || 'var(--color-primary)'} />
   }
 
   return (
-    <div className="nearby-places-section">
-      {/* Section Header */}
-      <div className="nearby-header">
-        <div>
-          <h3 className="nearby-title">
-            <Compass size={22} color="var(--color-primary)" />
-            Nearby Amenities & Neighborhood Points of Interest
-          </h3>
+    <div className="nearby-dashboard-container" id="property-nearby-section">
+      {/* Header */}
+      <div className="nearby-dash-header">
+        <div className="nearby-header-left">
+          <div className="nearby-badge">
+            <Compass size={16} /> Location Intelligence
+          </div>
+          <h3>Nearby Places & Amenities ({places.length})</h3>
           <p className="nearby-subtitle">
-            Explore key landmarks, transit hubs, healthcare, and essential services near this property.
+            Explore essential amenities, transit hubs, and points of interest near <strong>{property.title}</strong>.
           </p>
         </div>
-        <div className="nearby-total-badge">
-          <span>{places.length} Nearby POIs Found</span>
+
+        {/* Sorting Controls */}
+        <div className="nearby-sort-controls">
+          <span className="sort-label"><ArrowUpDown size={14} /> Sort By:</span>
+          <button
+            className={`sort-btn ${sortBy === 'distance' ? 'sort-active' : ''}`}
+            onClick={() => setSortBy('distance')}
+          >
+            Nearest First
+          </button>
+          <button
+            className={`sort-btn ${sortBy === 'rating' ? 'sort-active' : ''}`}
+            onClick={() => setSortBy('rating')}
+          >
+            Highest Rated
+          </button>
         </div>
       </div>
 
-      {/* Category Group Tabs */}
-      <div className="nearby-group-tabs">
-        {CATEGORY_GROUPS.map(group => (
+      {/* Category Tabs & Search Bar */}
+      <div className="nearby-controls-bar">
+        <div className="nearby-search-box">
+          <Search size={16} color="#94a3b8" />
+          <input
+            type="text"
+            placeholder="Search nearby places (e.g., Hospital, Metro, Cafe)..."
+            value={searchQuery}
+            onChange={e => setSearchQuery(e.target.value)}
+          />
+        </div>
+
+        {/* 14 Category Filter Pills */}
+        <div className="nearby-category-pills">
           <button
-            key={group.id}
-            className={`group-tab ${selectedGroup === group.id ? 'active' : ''}`}
-            onClick={() => {
-              setSelectedGroup(group.id)
-              setActiveCategory('all')
-            }}
+            className={`category-pill ${activeCategory === 'all' ? 'pill-active' : ''}`}
+            onClick={() => setActiveCategory('all')}
           >
-            {group.label}
+            <span>All Places</span>
+            <span className="pill-count">{places.length}</span>
           </button>
-        ))}
-      </div>
 
-      {/* 16 Category Filter Pills */}
-      <div className="nearby-pills-row">
-        <button
-          className={`cat-pill ${activeCategory === 'all' ? 'active' : ''}`}
-          onClick={() => setActiveCategory('all')}
-        >
-          <span>All Categories</span>
-          <span className="pill-count">{places.length}</span>
-        </button>
-
-        {NEARBY_CATEGORIES.filter(
-          cat => selectedGroup === 'all' || cat.group === selectedGroup
-        ).map(cat => {
-          const count = categoryCounts[cat.id] || 0
-          return (
+          {NEARBY_CATEGORIES.map(cat => (
             <button
               key={cat.id}
-              className={`cat-pill ${activeCategory === cat.id ? 'active' : ''}`}
+              className={`category-pill ${activeCategory === cat.id ? 'pill-active' : ''}`}
               onClick={() => setActiveCategory(cat.id)}
             >
               {renderCategoryIcon(cat.icon, activeCategory === cat.id ? '#ffffff' : cat.color, 14)}
               <span>{cat.label}</span>
-              <span className="pill-count">{count}</span>
+              <span className="pill-count">{categoryCounts[cat.id] || 0}</span>
             </button>
-          )
-        })}
-      </div>
-
-      {/* Search Input Bar */}
-      <div className="nearby-search-bar">
-        <Search size={16} color="var(--color-text-muted)" />
-        <input
-          type="text"
-          placeholder="Search nearby places (e.g. Metro, Hospital, Cafe, School)..."
-          value={searchQuery}
-          onChange={e => setSearchQuery(e.target.value)}
-        />
-        {searchQuery && (
-          <button className="clear-search-btn" onClick={() => setSearchQuery('')}>
-            ✕
-          </button>
-        )}
+          ))}
+        </div>
       </div>
 
       {/* Places Cards Grid */}
-      <div className="nearby-grid">
-        {filteredPlaces.length > 0 ? (
-          filteredPlaces.map(place => (
-            <div key={place.id} className="nearby-card">
-              <div className="card-top-row">
-                <div className="card-icon-badge" style={{ backgroundColor: `${place.categoryColor}15` }}>
+      <div className="nearby-places-grid">
+        {processedPlaces.length === 0 ? (
+          <div className="empty-places-state">
+            <Compass size={40} color="#94a3b8" />
+            <p>No places found matching your filter or search query.</p>
+          </div>
+        ) : (
+          processedPlaces.map(place => (
+            <motion.div
+              key={place.id}
+              className="nearby-place-card"
+              whileHover={{ y: -3, boxShadow: '0 12px 24px rgba(0, 0, 0, 0.08)' }}
+            >
+              <div className="place-card-header">
+                <div className="place-icon-box" style={{ background: `${place.categoryColor}15` }}>
                   {renderCategoryIcon(place.categoryIcon, place.categoryColor, 20)}
                 </div>
-                <div className="card-rating">
-                  <Star size={13} fill="#F59E0B" color="#F59E0B" />
-                  <span>{place.rating}</span>
+                <div className="place-header-details">
+                  <span className="place-cat-label" style={{ color: place.categoryColor }}>
+                    {place.categoryLabel}
+                  </span>
+                  <h4 className="place-title" title={place.name}>{place.name}</h4>
                 </div>
               </div>
 
-              <h4 className="card-place-name">{place.name}</h4>
-              <span className="card-category-tag">{place.categoryLabel}</span>
-
-              <div className="card-metrics-row">
-                <div className="metric-item">
-                  <Navigation size={13} color="var(--color-primary-dark)" />
+              <div className="place-card-stats">
+                <div className="place-dist-badge">
+                  <MapPin size={13} color="var(--color-primary-dark, #5d8225)" />
                   <strong>{place.formattedDistance}</strong>
+                  <span className="place-time">• {place.estimatedTime}</span>
                 </div>
-                <div className="metric-item">
-                  <Clock size={13} color="var(--color-text-muted)" />
-                  <span>{place.estimatedTime}</span>
+
+                <div className="place-rating-badge">
+                  <Star size={12} fill="#EAB308" color="#EAB308" />
+                  <strong>{place.rating}</strong>
                 </div>
               </div>
 
-              <button
-                className="btn btn-ghost view-map-btn"
-                onClick={() => onSelectPlaceOnMap && onSelectPlaceOnMap(place)}
-              >
-                <MapPin size={13} />
-                <span>View on Map</span>
-              </button>
-            </div>
+              {/* Status Badge: Open / Closed */}
+              <div className="place-status-row">
+                <span className={`open-status-tag ${place.isOpen ? 'tag-open' : 'tag-closed'}`}>
+                  {place.isOpen ? <CheckCircle2 size={12} /> : <XCircle size={12} />}
+                  {place.isOpen ? 'Open Now' : 'Closed'}
+                </span>
+              </div>
+
+              {/* Actions: Google Navigation & View on Map */}
+              <div className="place-card-actions">
+                <button
+                  className="place-action-btn btn-map-view"
+                  onClick={() => onSelectPlaceOnMap && onSelectPlaceOnMap(place)}
+                >
+                  <MapPin size={13} /> View on Map
+                </button>
+
+                <a
+                  href={place.googleNavUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="place-action-btn btn-google-nav"
+                >
+                  <Navigation size={13} /> Directions <ExternalLink size={11} />
+                </a>
+              </div>
+            </motion.div>
           ))
-        ) : (
-          <div className="nearby-empty-state">
-            <p>No nearby places found matching "{searchQuery}". Try selecting another category.</p>
-          </div>
         )}
       </div>
     </div>
