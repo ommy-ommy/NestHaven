@@ -27,21 +27,24 @@
 /* Glass Header Overlay */
 .map-glass-header {
   position: absolute;
-  top: 14px;
-  left: 14px;
-  right: 14px;
+  top: 12px;
+  left: 12px;
+  right: 12px;
   z-index: 1000;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
-  padding: 0.75rem 1.25rem;
-  background: rgba(255, 255, 255, 0.85);
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  padding: 0.65rem 1rem;
+  background: rgba(255, 255, 255, 0.92);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.6);
   border-radius: var(--radius-lg, 12px);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  max-width: calc(100% - 24px);
+  box-sizing: border-box;
 }
 
 .map-header-left {

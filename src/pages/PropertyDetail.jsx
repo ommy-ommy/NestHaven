@@ -75,28 +75,30 @@ export default function PropertyDetail() {
   return (
     <motion.div className="detail-page" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
       {/* Gallery */}
-      <section className="detail-gallery">
-        <div className="gallery-main" onClick={() => setLightbox(true)}>
-          <img src={property.images[activeImg]} alt={property.title} />
-          <div className="gallery-overlay">
-            <span className="gallery-view-all">View All Photos</span>
-          </div>
-        </div>
-        <div className="gallery-thumbs">
-          {property.images.slice(0, 4).map((img, i) => (
-            <div
-              key={i}
-              className={`gallery-thumb ${i === activeImg ? 'thumb-active' : ''}`}
-              onClick={() => setActiveImg(i)}
-            >
-              <img src={img} alt="" />
-              {i === 3 && property.images.length > 4 && (
-                <div className="thumb-more">+{property.images.length - 4}</div>
-              )}
+      <div className="container" style={{ paddingTop: '1.25rem' }}>
+        <section className="detail-gallery">
+          <div className="gallery-main" onClick={() => setLightbox(true)}>
+            <img src={property.images[activeImg]} alt={property.title} />
+            <div className="gallery-overlay">
+              <span className="gallery-view-all">View All Photos</span>
             </div>
-          ))}
-        </div>
-      </section>
+          </div>
+          <div className="gallery-thumbs">
+            {property.images.slice(0, 4).map((img, i) => (
+              <div
+                key={i}
+                className={`gallery-thumb ${i === activeImg ? 'thumb-active' : ''}`}
+                onClick={() => setActiveImg(i)}
+              >
+                <img src={img} alt="" />
+                {i === 3 && property.images.length > 4 && (
+                  <div className="thumb-more">+{property.images.length - 4}</div>
+                )}
+              </div>
+            ))}
+          </div>
+        </section>
+      </div>
 
       {/* Lightbox */}
       {lightbox && (
