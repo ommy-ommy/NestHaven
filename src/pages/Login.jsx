@@ -3,13 +3,15 @@ import { Link, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Home, AlertCircle, Info } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
+import GoogleAccountModal from '../components/auth/GoogleAccountModal'
 import './Auth.css'
 
 export default function Login() {
-  const { signInWithGoogle, signInWithEmail, loginAs, authError, clearAuthError } = useAuth()
+  const { signInWithEmail, loginAs, loginWithGoogleAccount, authError, clearAuthError } = useAuth()
   const navigate = useNavigate()
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(false)
+  const [showGoogleModal, setShowGoogleModal] = useState(false)
 
   // Form State
   const [email, setEmail] = useState('')
@@ -22,19 +24,20 @@ export default function Login() {
     }
   }, [authError])
 
-  const handleGoogleLogin = async () => {
+  const handleGoogleLogin = () => {
+    setError(null)
+    if (clearAuthError) clearAuthError()
+    setShowGoogleModal(true)
+  }
+
+  const handleSelectGoogleAccount = (googleUserData) => {
     try {
-      setLoading(true)
-      setError(null)
-      if (clearAuthError) clearAuthError()
-      await signInWithGoogle('buyer')
+      setShowGoogleModal(false)
+      const user = loginWithGoogleAccount(googleUserData)
+      navigate(user.role === 'seller' ? '/seller/dashboard' : '/buyer/dashboard')
     } catch (err) {
-      console.error('Google Login error:', err)
-      setError(
-        err.message ||
-        'Google Sign-In requires enabling Google Provider in your Supabase Dashboard (Authentication -> Providers -> Google).'
-      )
-      setLoading(false)
+      console.error('Google account selection error:', err)
+      setError('Failed to sign in with Google account.')
     }
   }
 
@@ -194,6 +197,13 @@ export default function Login() {
           </div>
         </div>
       </div>
+
+      <GoogleAccountModal
+        isOpen={showGoogleModal}
+        onClose={() => setShowGoogleModal(false)}
+        onSelectAccount={handleSelectGoogleAccount}
+        role="buyer"
+      />
     </motion.div>
   )
 }

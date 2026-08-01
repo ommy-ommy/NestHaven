@@ -119,6 +119,15 @@ export function AuthProvider({ children }) {
         if (session?.user) {
           const profile = await fetchProfile(session.user)
           setUser(profile)
+        } else {
+          const savedUser = localStorage.getItem('nesthaven_user')
+          if (savedUser) {
+            try {
+              setUser(JSON.parse(savedUser))
+            } catch (e) {
+              console.error('Failed to parse saved nesthaven_user:', e)
+            }
+          }
         }
       } catch (err) {
         console.error('getSession profile error:', err)
@@ -246,6 +255,7 @@ export function AuthProvider({ children }) {
       ],
     }
     setUser(newUser)
+    localStorage.setItem('nesthaven_user', JSON.stringify(newUser))
     return newUser
   }
 
@@ -259,6 +269,7 @@ export function AuthProvider({ children }) {
     setUser(null)
     setSession(null)
     localStorage.removeItem('pending_role')
+    localStorage.removeItem('nesthaven_user')
   }
 
   const clearAuthError = () => setAuthError(null)

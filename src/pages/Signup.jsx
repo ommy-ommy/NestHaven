@@ -3,11 +3,12 @@ import { Link, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Building2, Home, ArrowRight, CheckCircle, AlertCircle, Mail } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
+import GoogleAccountModal from '../components/auth/GoogleAccountModal'
 import './Auth.css'
 
 export default function Signup() {
   const navigate = useNavigate()
-  const { signUpWithEmail, signInWithGoogle, loginAs } = useAuth()
+  const { signUpWithEmail, loginAs, loginWithGoogleAccount } = useAuth()
   const [step, setStep] = useState(0) // 0: select role, 1: form, 2: confirmation
   const [selectedRole, setSelectedRole] = useState('buyer')
   const [formData, setFormData] = useState({
@@ -19,6 +20,7 @@ export default function Signup() {
   })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
+  const [showGoogleModal, setShowGoogleModal] = useState(false)
   const [confirmationSent, setConfirmationSent] = useState(false)
   const [registeredEmail, setRegisteredEmail] = useState('')
 
@@ -32,18 +34,19 @@ export default function Signup() {
     setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }))
   }
 
-  const handleGoogleSignup = async () => {
+  const handleGoogleSignup = () => {
+    setError(null)
+    setShowGoogleModal(true)
+  }
+
+  const handleSelectGoogleAccount = (googleUserData) => {
     try {
-      setLoading(true)
-      setError(null)
-      await signInWithGoogle(selectedRole || 'buyer')
+      setShowGoogleModal(false)
+      const user = loginWithGoogleAccount({ ...googleUserData, role: selectedRole || 'buyer' })
+      navigate(user.role === 'seller' ? '/seller/dashboard' : '/buyer/dashboard')
     } catch (err) {
-      console.error('Google Signup error:', err)
-      setError(
-        err.message ||
-        'Google Sign-In requires enabling Google Provider in your Supabase Dashboard (Authentication -> Providers -> Google).'
-      )
-      setLoading(false)
+      console.error('Google account selection error:', err)
+      setError('Failed to sign up with Google account.')
     }
   }
 
@@ -322,6 +325,13 @@ export default function Signup() {
           </div>
         </div>
       </div>
+
+      <GoogleAccountModal
+        isOpen={showGoogleModal}
+        onClose={() => setShowGoogleModal(false)}
+        onSelectAccount={handleSelectGoogleAccount}
+        role={selectedRole || 'buyer'}
+      />
     </motion.div>
   )
 }
