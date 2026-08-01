@@ -2,8 +2,9 @@ import { useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { MapPin, BedDouble, Bath, Maximize, Building2, Compass, Star, Heart, Share2, Phone, MessageSquare, Calendar, ChevronLeft, ChevronRight, X, Eye, Clock, Shield, Check, Calculator, CheckCircle2, GitCompare } from 'lucide-react'
-import { properties, formatPrice } from '../data/properties'
+import { properties as defaultProperties, formatPrice } from '../data/properties'
 import { reviews, amenityLabels } from '../data/cities'
+import { useProperties } from '../context/PropertyContext'
 import { useFavorites } from '../context/FavoriteContext'
 import { useCompare } from '../context/CompareContext'
 import { useAuth } from '../context/AuthContext'
@@ -18,16 +19,22 @@ import './PropertyDetail.css'
 
 export default function PropertyDetail() {
   const { id } = useParams()
-  const property = properties.find(p => p.id === id) || properties[0]
-  const propertyReviews = reviews.filter(r => r.propertyId === property.id)
-  const similarProperties = properties.filter(p => p.id !== property.id && p.city === property.city).slice(0, 3)
+  const { properties: contextProperties } = useProperties()
+  const propertyList = contextProperties && contextProperties.length > 0 ? contextProperties : defaultProperties
+  const property = propertyList.find(p => String(p.id) === String(id)) || propertyList[0]
+
+  const propertyReviews = reviews.filter(r => r.propertyId === property?.id)
+  const similarProperties = propertyList.filter(p => String(p.id) !== String(property?.id) && p.city === property?.city).slice(0, 3)
   const { isFavorite, toggleFavorite } = useFavorites()
   const { isInCompare, toggleCompare } = useCompare()
   const { user } = useAuth()
-  const { getBadgesForProperty } = useVerification()
-  const fav = isFavorite(property.id)
-  const compared = isInCompare(property.id)
-  const activeBadges = getBadgesForProperty(property.id)
+  const { getBadgesForProperty, getVerificationForProperty } = useVerification()
+
+  const fav = property ? isFavorite(property.id) : false
+  const compared = property ? isInCompare(property.id) : false
+  const activeBadges = property ? getBadgesForProperty(property.id) : []
+  const verRecord = property ? getVerificationForProperty(property.id) : null
+  const isVerified = Boolean(property?.verified || verRecord?.status === 'Approved' || activeBadges.length > 0)
 
   const [activeImg, setActiveImg] = useState(0)
   const [lightbox, setLightbox] = useState(false)
@@ -42,7 +49,12 @@ export default function PropertyDetail() {
   const [emiMonths, setEmiMonths] = useState(240)
   const [emiRate, setEmiRate] = useState(8.5)
 
+  const propertyImages = property?.images && property.images.length > 0
+    ? property.images
+    : ['https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80']
+
   const monthlyEmi = (() => {
+    if (!property?.price) return 0
     const P = property.price * 0.8
     const r = emiRate / 12 / 100
     const n = emiMonths
@@ -54,12 +66,12 @@ export default function PropertyDetail() {
     try {
       const payload = {
         sender_id: user?.id || null,
-        receiver_id: property.sellerId || 's1',
-        property_id: String(property.id),
+        receiver_id: property?.sellerId || 's1',
+        property_id: String(property?.id || ''),
         sender_name: user?.name || 'Interested Buyer',
         sender_email: user?.email || 'buyer@example.com',
         sender_phone: user?.phone || '+91 98765 43210',
-        message: msgText || `Inquiry regarding ${property.title}`,
+        message: msgText || `Inquiry regarding ${property?.title || 'Property'}`,
         meeting_date: isMeeting ? meetingDate : null,
         meeting_time: isMeeting ? meetingTime : null,
       }
@@ -78,21 +90,21 @@ export default function PropertyDetail() {
       <div className="container" style={{ paddingTop: '1.25rem' }}>
         <section className="detail-gallery">
           <div className="gallery-main" onClick={() => setLightbox(true)}>
-            <img src={property.images[activeImg]} alt={property.title} />
+            <img src={propertyImages[activeImg] || propertyImages[0]} alt={property?.title} />
             <div className="gallery-overlay">
               <span className="gallery-view-all">View All Photos</span>
             </div>
           </div>
           <div className="gallery-thumbs">
-            {property.images.slice(0, 4).map((img, i) => (
+            {propertyImages.slice(0, 4).map((img, i) => (
               <div
                 key={i}
                 className={`gallery-thumb ${i === activeImg ? 'thumb-active' : ''}`}
                 onClick={() => setActiveImg(i)}
               >
                 <img src={img} alt="" />
-                {i === 3 && property.images.length > 4 && (
-                  <div className="thumb-more">+{property.images.length - 4}</div>
+                {i === 3 && propertyImages.length > 4 && (
+                  <div className="thumb-more">+{propertyImages.length - 4}</div>
                 )}
               </div>
             ))}
@@ -104,14 +116,14 @@ export default function PropertyDetail() {
       {lightbox && (
         <div className="lightbox" onClick={() => setLightbox(false)}>
           <button className="lightbox-close"><X size={24} /></button>
-          <button className="lightbox-nav lightbox-prev" onClick={e => { e.stopPropagation(); setActiveImg(p => (p - 1 + property.images.length) % property.images.length) }}>
+          <button className="lightbox-nav lightbox-prev" onClick={e => { e.stopPropagation(); setActiveImg(p => (p - 1 + propertyImages.length) % propertyImages.length) }}>
             <ChevronLeft size={28} />
           </button>
-          <img src={property.images[activeImg]} alt="" className="lightbox-img" onClick={e => e.stopPropagation()} />
-          <button className="lightbox-nav lightbox-next" onClick={e => { e.stopPropagation(); setActiveImg(p => (p + 1) % property.images.length) }}>
+          <img src={propertyImages[activeImg] || propertyImages[0]} alt="" className="lightbox-img" onClick={e => e.stopPropagation()} />
+          <button className="lightbox-nav lightbox-next" onClick={e => { e.stopPropagation(); setActiveImg(p => (p + 1) % propertyImages.length) }}>
             <ChevronRight size={28} />
           </button>
-          <div className="lightbox-counter">{activeImg + 1} / {property.images.length}</div>
+          <div className="lightbox-counter">{activeImg + 1} / {propertyImages.length}</div>
         </div>
       )}
 
@@ -141,15 +153,15 @@ export default function PropertyDetail() {
             {/* Title Section */}
             <div className="detail-title-section">
               <div className="detail-badges" style={{ flexWrap: 'wrap', gap: '0.5rem' }}>
-                <span className="badge badge-primary">{property.type.charAt(0).toUpperCase() + property.type.slice(1)}</span>
-                <span className="badge badge-dark">{property.listingType === 'rent' ? 'For Rent' : 'For Sale'}</span>
-                {property.featured && <span className="badge badge-accent">Featured</span>}
+                <span className="badge badge-primary">{(property?.type || 'apartment').charAt(0).toUpperCase() + (property?.type || 'apartment').slice(1)}</span>
+                <span className="badge badge-dark">{property?.listingType === 'rent' ? 'For Rent' : 'For Sale'}</span>
+                {property?.featured && <span className="badge badge-accent">Featured</span>}
                 {isVerified && <PropertyVerificationBar badges={activeBadges} size="md" />}
               </div>
-              <h1>{property.title}</h1>
+              <h1>{property?.title || 'Property Detail'}</h1>
               <div className="detail-location">
                 <MapPin size={16} />
-                <span>{property.address}</span>
+                <span>{property?.address || `${property?.locality || ''}, ${property?.city || ''}`}</span>
               </div>
               <div className="detail-actions-row">
                 <button
@@ -280,14 +292,14 @@ export default function PropertyDetail() {
               </div>
 
               {/* Rental Info */}
-              {property.listingType === 'rent' && (
+              {property?.listingType === 'rent' && (
                 <div className="rental-info-card">
                   <h4>Rental Details</h4>
                   <div className="rental-details">
                     <div className="rental-row"><span>Monthly Rent</span><strong>{formatPrice(property.price, 'rent')}</strong></div>
-                    <div className="rental-row"><span>Security Deposit</span><strong>₹{property.rentDeposit?.toLocaleString('en-IN')}</strong></div>
-                    <div className="rental-row"><span>Lease Duration</span><strong>{property.leaseDuration}</strong></div>
-                    <div className="rental-row"><span>Furnishing</span><strong>{property.furnished.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}</strong></div>
+                    <div className="rental-row"><span>Security Deposit</span><strong>₹{(property.rentDeposit || (property.price * 2)).toLocaleString('en-IN')}</strong></div>
+                    <div className="rental-row"><span>Lease Duration</span><strong>{property.leaseDuration || '11 Months'}</strong></div>
+                    <div className="rental-row"><span>Furnishing</span><strong>{property.furnished ? property.furnished.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ') : 'Unfurnished'}</strong></div>
                   </div>
                 </div>
               )}

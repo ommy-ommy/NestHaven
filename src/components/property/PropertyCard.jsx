@@ -137,17 +137,17 @@ export default function PropertyCard({ property, layout = 'vertical' }) {
 
         <div className="pcard-footer">
           <div className="pcard-seller">
-            <div className="pcard-seller-avatar">{property.sellerName.charAt(0)}</div>
-            <span className="pcard-seller-name">{property.sellerName}</span>
+            <div className="pcard-seller-avatar">{(property?.sellerName || 'NestHaven').charAt(0)}</div>
+            <span className="pcard-seller-name">{property?.sellerName || 'NestHaven Seller'}</span>
           </div>
           <div className="pcard-meta">
             <span className="pcard-rating">
               <Star size={12} fill="var(--color-accent)" color="var(--color-accent)" />
-              {property.rating}
+              {property?.rating || 4.5}
             </span>
             <span className="pcard-views">
               <Eye size={12} />
-              {property.views}
+              {property?.views || 0}
             </span>
           </div>
         </div>
