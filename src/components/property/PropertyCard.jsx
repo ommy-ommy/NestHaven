@@ -4,6 +4,8 @@ import { Heart, MapPin, Maximize, BedDouble, Bath, ChevronLeft, ChevronRight, St
 import { formatPrice } from '../../data/properties'
 import { useFavorites } from '../../context/FavoriteContext'
 import { useCompare } from '../../context/CompareContext'
+import { useVerification } from '../../context/VerificationContext'
+import { PrimaryBlueVerificationBadge, PropertyVerificationBar } from '../verification/VerificationBadge'
 import './PropertyCard.css'
 
 export default function PropertyCard({ property, layout = 'vertical' }) {
@@ -11,8 +13,13 @@ export default function PropertyCard({ property, layout = 'vertical' }) {
   const [imgLoaded, setImgLoaded] = useState(false)
   const { isFavorite, toggleFavorite } = useFavorites()
   const { isInCompare, toggleCompare } = useCompare()
+  const { getBadgesForProperty, getVerificationForProperty } = useVerification()
   const fav = isFavorite(property.id)
   const compared = isInCompare(property.id)
+
+  const activeBadges = getBadgesForProperty(property.id)
+  const verRecord = getVerificationForProperty(property.id)
+  const isVerified = property.verified || verRecord?.status === 'Approved' || activeBadges.length > 0
 
   const nextImg = (e) => {
     e.preventDefault()
@@ -48,6 +55,7 @@ export default function PropertyCard({ property, layout = 'vertical' }) {
 
         {/* Badges */}
         <div className="pcard-badges">
+          {isVerified && <PrimaryBlueVerificationBadge text="Verified" />}
           {property.featured && <span className="badge badge-accent">Featured</span>}
           <span className="badge badge-dark">{property.listingType === 'rent' ? 'Rent' : 'Buy'}</span>
         </div>
@@ -120,6 +128,12 @@ export default function PropertyCard({ property, layout = 'vertical' }) {
             <span>{property.area.toLocaleString()} sqft</span>
           </div>
         </div>
+
+        {activeBadges.length > 0 && (
+          <div style={{ marginBottom: '0.65rem' }}>
+            <PropertyVerificationBar badges={activeBadges} size="sm" />
+          </div>
+        )}
 
         <div className="pcard-footer">
           <div className="pcard-seller">

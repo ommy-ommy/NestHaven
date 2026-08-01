@@ -7,6 +7,7 @@ import { PropertyProvider } from './context/PropertyContext'
 import { FavoriteProvider } from './context/FavoriteContext'
 import { CompareProvider } from './context/CompareContext'
 import { DocumentProvider } from './context/DocumentContext'
+import { VerificationProvider } from './context/VerificationContext'
 import ErrorBoundary from './components/common/ErrorBoundary'
 import './index.css'
 
@@ -19,7 +20,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
             <FavoriteProvider>
               <CompareProvider>
                 <DocumentProvider>
-                  <App />
+                  <VerificationProvider>
+                    <App />
+                  </VerificationProvider>
                 </DocumentProvider>
               </CompareProvider>
             </FavoriteProvider>

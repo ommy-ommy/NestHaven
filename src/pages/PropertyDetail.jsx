@@ -7,11 +7,13 @@ import { reviews, amenityLabels } from '../data/cities'
 import { useFavorites } from '../context/FavoriteContext'
 import { useCompare } from '../context/CompareContext'
 import { useAuth } from '../context/AuthContext'
+import { useVerification } from '../context/VerificationContext'
 import { supabase } from '../lib/supabase'
 import PropertyCard from '../components/property/PropertyCard'
 import PropertyMap from '../components/property/PropertyMap'
 import NearbyPlaces from '../components/property/NearbyPlaces'
 import PropertyDocumentsTab from '../components/document/PropertyDocumentsTab'
+import { PropertyVerificationBar, PrimaryBlueVerificationBadge } from '../components/verification/VerificationBadge'
 import './PropertyDetail.css'
 
 export default function PropertyDetail() {
@@ -22,8 +24,10 @@ export default function PropertyDetail() {
   const { isFavorite, toggleFavorite } = useFavorites()
   const { isInCompare, toggleCompare } = useCompare()
   const { user } = useAuth()
+  const { getBadgesForProperty } = useVerification()
   const fav = isFavorite(property.id)
   const compared = isInCompare(property.id)
+  const activeBadges = getBadgesForProperty(property.id)
 
   const [activeImg, setActiveImg] = useState(0)
   const [lightbox, setLightbox] = useState(false)
@@ -133,10 +137,11 @@ export default function PropertyDetail() {
           <div className="detail-main">
             {/* Title Section */}
             <div className="detail-title-section">
-              <div className="detail-badges">
+              <div className="detail-badges" style={{ flexWrap: 'wrap', gap: '0.5rem' }}>
                 <span className="badge badge-primary">{property.type.charAt(0).toUpperCase() + property.type.slice(1)}</span>
                 <span className="badge badge-dark">{property.listingType === 'rent' ? 'For Rent' : 'For Sale'}</span>
                 {property.featured && <span className="badge badge-accent">Featured</span>}
+                <PropertyVerificationBar badges={activeBadges} size="md" />
               </div>
               <h1>{property.title}</h1>
               <div className="detail-location">

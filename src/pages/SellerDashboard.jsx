@@ -5,6 +5,7 @@ import { Building2, Eye, MessageSquare, Star, Plus, Edit3, Trash2, TrendingUp, U
 import { useAuth } from '../context/AuthContext'
 import { properties, formatPrice } from '../data/properties'
 import SellerDocumentUploadModal from '../components/document/SellerDocumentUploadModal'
+import SellerVerificationModal from '../components/verification/SellerVerificationModal'
 import './Dashboard.css'
 
 export default function SellerDashboard() {
@@ -13,6 +14,8 @@ export default function SellerDashboard() {
 
   const [selectedPropertyForUpload, setSelectedPropertyForUpload] = useState(null)
   const [showUploadModal, setShowUploadModal] = useState(false)
+  const [selectedPropertyForVerification, setSelectedPropertyForVerification] = useState(null)
+  const [showVerificationModal, setShowVerificationModal] = useState(false)
 
   const stats = [
     { icon: <Building2 size={22} />, label: 'Total Listings', value: user?.totalListings || 24, color: 'var(--color-primary)' },
@@ -119,6 +122,18 @@ export default function SellerDashboard() {
                     <td>
                       <div className="table-actions">
                         <button
+                          className="btn btn-primary btn-sm"
+                          style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '0.78rem' }}
+                          onClick={() => {
+                            setSelectedPropertyForVerification(p)
+                            setShowVerificationModal(true)
+                          }}
+                          title="Apply for Official Verification Badges"
+                        >
+                          <ShieldCheck size={13} />
+                          Verify Property
+                        </button>
+                        <button
                           className="btn btn-secondary btn-sm"
                           style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '0.78rem' }}
                           onClick={() => {
@@ -173,6 +188,13 @@ export default function SellerDashboard() {
         onClose={() => setShowUploadModal(false)}
         propertyId={selectedPropertyForUpload?.id}
         propertyTitle={selectedPropertyForUpload?.title}
+        currentUser={user}
+      />
+
+      <SellerVerificationModal
+        isOpen={showVerificationModal}
+        onClose={() => setShowVerificationModal(false)}
+        property={selectedPropertyForVerification}
         currentUser={user}
       />
     </motion.div>

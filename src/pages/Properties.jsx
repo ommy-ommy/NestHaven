@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Search, SlidersHorizontal, X, MapPin, Grid3X3, List, ChevronDown, Compass } from 'lucide-react'
+import { Search, SlidersHorizontal, X, MapPin, Grid3X3, List, ChevronDown, Compass, ShieldCheck } from 'lucide-react'
 import { useProperties } from '../context/PropertyContext'
 import PropertyCard from '../components/property/PropertyCard'
 import './Properties.css'
@@ -154,6 +154,20 @@ export default function Properties() {
               <button className="sidebar-close" onClick={() => setSidebarOpen(false)}>
                 <X size={20} />
               </button>
+            </div>
+
+            {/* Verification Status Filter */}
+            <div className="filter-group" style={{ background: '#eff6ff', padding: '0.85rem 1rem', borderRadius: 'var(--radius-lg, 12px)', border: '1px solid #bfdbfe', marginBottom: '1.25rem' }}>
+              <label className="filter-label" style={{ color: '#1e40af', display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', margin: 0, textTransform: 'none' }}>
+                <input
+                  type="checkbox"
+                  checked={!!filters.onlyVerified}
+                  onChange={e => updateFilter('onlyVerified', e.target.checked)}
+                  style={{ width: '18px', height: '18px', accentColor: '#2563eb', cursor: 'pointer' }}
+                />
+                <ShieldCheck size={18} color="#2563eb" />
+                <span style={{ fontWeight: 700, fontSize: '0.88rem' }}>Verified Properties Only</span>
+              </label>
             </div>
 
             {/* Property Type */}

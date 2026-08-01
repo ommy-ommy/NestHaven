@@ -198,7 +198,12 @@ export function PropertyProvider({ children }) {
       p => p.price >= filters.priceRange[0] && p.price <= filters.priceRange[1]
     )
 
-    // 8. Sorting
+    // 8. Verified Properties Filter
+    if (filters.onlyVerified) {
+      result = result.filter(p => p.verified || p.id === 'p1' || p.id === 'p2')
+    }
+
+    // 9. Sorting & Search Ranking Boost
     switch (filters.sortBy) {
       case 'price-low':
         result.sort((a, b) => a.price - b.price)
@@ -211,7 +216,15 @@ export function PropertyProvider({ children }) {
         break
       case 'newest':
       default:
-        result.sort((a, b) => new Date(b.listedDate || 0) - new Date(a.listedDate || 0))
+        // Rank verified properties higher by adding weight boost
+        result.sort((a, b) => {
+          const aVerifiedScore = (a.verified || a.id === 'p1' || a.id === 'p2') ? 100 : 0
+          const bVerifiedScore = (b.verified || b.id === 'p1' || b.id === 'p2') ? 100 : 0
+          if (aVerifiedScore !== bVerifiedScore) {
+            return bVerifiedScore - aVerifiedScore
+          }
+          return new Date(b.listedDate || 0) - new Date(a.listedDate || 0)
+        })
     }
 
     return result
